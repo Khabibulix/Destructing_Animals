@@ -3,6 +3,7 @@ window.addEventListener("load", function(){
     const ctx = canvas.getContext("2d");
     const enemies = []
     let score = 0;
+    let gameOver = false;
 
     class InputHandler {
         constructor(){
@@ -49,7 +50,17 @@ window.addEventListener("load", function(){
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
         }
-        update(input){
+        update(input, enemies){
+            //collision detection using Pythagoras
+            enemies.forEach(enemy => {
+                const dx = enemy.x - this.x;
+                const dy = enemy.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < enemy.width/2 + this.width/2){
+                    gameOver = true;
+                }
+            });
+            //controls
             if(input.keys.indexOf("ArrowRight") > -1){
                 this.speed += 1;
             } else if(input.keys.indexOf("ArrowLeft") > -1){
@@ -168,10 +179,10 @@ window.addEventListener("load", function(){
         background.draw(ctx);
         background.update();
         player.draw(ctx)
-        player.update(input);
+        player.update(input, enemies);
         handleEnemies(deltaTime);
         displayText(ctx);
-        requestAnimationFrame(animate);
+        if (!gameOver) requestAnimationFrame(animate);
     }
     animate(0);
 });
