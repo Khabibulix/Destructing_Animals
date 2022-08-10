@@ -42,7 +42,9 @@ window.addEventListener("load", function(){
 
         }
         draw(context){
-            context.strokeRect(this.x, this.y, this.width, this.height);
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + (this.height+50)/2, this.width/2, 0, Math.PI * 2);
+            context.stroke();
             //context.fillStyle = 'white';
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
@@ -110,15 +112,16 @@ window.addEventListener("load", function(){
             this.speed = 8;
             this.marked_for_deletion = false;
         }
-        draw(context){
-            context.strokeRect(this.x, this.y, this.width, this.height);
+        draw(context){        
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + (this.height+50)/2, this.width/2, 0, Math.PI * 2);
+            context.stroke();
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         update(deltaTime){
             this.x-= this.speed;
             if (this.x < 0 - this.width){
                 this.marked_for_deletion = true;
-                score++;
             } 
             
         }
