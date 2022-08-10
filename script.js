@@ -53,8 +53,8 @@ window.addEventListener("load", function(){
         update(input, enemies){
             //collision detection using Pythagoras
             enemies.forEach(enemy => {
-                const dx = enemy.x - this.x;
-                const dy = enemy.y - this.y;
+                const dx = (enemy.x + enemy.width/2) - (this.x + this.width/2);
+                const dy = (enemy.y + enemy.height/2) - (this.y + this.height/2);
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 if (distance < enemy.width/2 + this.width/2){
                     gameOver = true;
@@ -159,8 +159,15 @@ window.addEventListener("load", function(){
         context.fillStyle = "black";
         context.fillText("Score: " + score, 20, 50);
         //Double for text-shadow        
-        context.fillStyle = "white";
+        context.fillStyle = "blue";
         context.fillText("Score: " + score, 22, 52);
+        if (gameOver){
+            context.textAlign = "center";
+            context.fillStyle = "black";
+            context.fillText("Game Over: You lose! ", canvas.width/2, 200);            
+            context.fillStyle = "blue";
+            context.fillText("Game Over: You lose! ", canvas.width/2 + 2, 202);
+        }
     }
 
     const input = new InputHandler();
