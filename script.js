@@ -30,13 +30,18 @@ window.addEventListener("load", function(){
             this.game_width = game_width;
             this.game_height = game_height;
             this.width = 200;
-            this.height = 200;
+            this.height = 252;
             this.x = 0;
-            this.y = 0;
+            this.y = this.game_height - this.height;
+            this.image = document.getElementById("playerImage")
         }
         draw(context){
             context.fillStyle = 'white';
             context.fillRect(this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+        update(){
+            this.x++;
         }
     }
 
@@ -58,10 +63,12 @@ window.addEventListener("load", function(){
 
     const input = new InputHandler();
     const player =  new Player(canvas.width, canvas.height);
-    player.draw(ctx)
 
     function animate(){
-
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        player.draw(ctx)
+        player.update();
+        requestAnimationFrame(animate);
     }
-
+    animate();
 });
