@@ -33,15 +33,23 @@ window.addEventListener("load", function(){
             this.height = 252;
             this.x = 0;
             this.y = this.game_height - this.height;
-            this.image = document.getElementById("playerImage")
+            this.image = document.getElementById("playerImage");
+            this.speed = 0;
+
         }
         draw(context){
             context.fillStyle = 'white';
             context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
-        update(){
-            this.x++;
+        update(input){
+            //horizontal mov
+            this.x += this.speed;
+            if(input.keys.indexOf("ArrowRight") > -1){
+                this.speed = 5;
+            } else {
+                this.speed = 0;
+            }
         }
     }
 
@@ -67,7 +75,7 @@ window.addEventListener("load", function(){
     function animate(){
         ctx.clearRect(0,0, canvas.width, canvas.height)
         player.draw(ctx)
-        player.update();
+        player.update(input);
         requestAnimationFrame(animate);
     }
     animate();
