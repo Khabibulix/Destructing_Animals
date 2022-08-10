@@ -42,6 +42,7 @@ window.addEventListener("load", function(){
 
         }
         draw(context){
+            context.strokeRect(this.x, this.y, this.width, this.height);
             //context.fillStyle = 'white';
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
@@ -104,16 +105,22 @@ window.addEventListener("load", function(){
             this.height = 160;            
             this.x = this.game_width;
             this.y = this.game_height - this.height;
+            this.maxFrame = 5;
             this.image = document.getElementById("enemyImage");
             this.speed = 8;
             this.marked_for_deletion = false;
         }
         draw(context){
+            context.strokeRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
-        update(){
+        update(deltaTime){
             this.x-= this.speed;
-            if (this.x < 0 - this.width) this.marked_for_deletion = true;
+            if (this.x < 0 - this.width){
+                this.marked_for_deletion = true;
+                score++;
+            } 
+            
         }
     }
 
@@ -128,15 +135,18 @@ window.addEventListener("load", function(){
         }
         enemies.forEach(enemy => {
             enemy.draw(ctx);
-            enemy.update();
+            enemy.update(deltaTime);
         });
         enemies.filter(enemy => !enemy.marked_for_deletion);
     }
 
-    function displayText(context){
-        context.fillStyle = "black";
+    function displayText(context){        
         context.font = '40px Helvetica';
+        context.fillStyle = "black";
         context.fillText("Score: " + score, 20, 50);
+        //Double for text-shadow        
+        context.fillStyle = "white";
+        context.fillText("Score: " + score, 22, 52);
     }
 
     const input = new InputHandler();
