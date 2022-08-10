@@ -12,6 +12,7 @@ const WINDOW_X_CENTER = CANVAS.width / 2;
 const WINDOW_Y_CENTER = CANVAS.height / 2;
 const PLAYER_JUMP_HEIGHT = 20;
 const BRICK = new Image();
+const BLOCK_DICT = []
 
 
 // TILEMAP TESTING CONST
@@ -209,17 +210,28 @@ function draw(){
         for (let x = 0 ; x < testmap.width ; x++) // X axis of the tilemap (width).
         {   
             if (TESTMAP[y][x] == TILE_BLOCK)
-            {
-
+            {   
                 testmap.sprite.current_x_position = testmap.x_pos + x * TILE_SIZE;
                 testmap.sprite.current_y_position = testmap.y_pos + y * TILE_SIZE;
-                if (player.x_pos == testmap.sprite.current_x_position){
-                    console.log("Touched!")
-                }
+                BLOCK_DICT.push([testmap.sprite.current_x_position, testmap.sprite.current_y_position])
                 testmap.sprite.draw();
             }
         }
     }
+}
+
+function crawling_dict_for_x_position(xpos){
+    if (BLOCK_DICT.includes(xpos)){
+        return true
+    }
+    return false
+}
+
+function crawling_dict_for_y_position(ypos){    
+    if (BLOCK_DICT.includes(ypos)){
+        return true
+    }
+    return false
 }
 
 // MAIN
@@ -228,6 +240,8 @@ function main() // Gameloop
 {
             // PROCESS (fun todo) - Do the maths here
             process();
+            console.log("player xpos: " + player.x_pos)
+            console.log("player ypos: " + player.x_pos)
 
             // TESTING A TILEMAP SCROLLING
             testmap.x_pos -= 1; // Makes the whole thing slide to the left.
@@ -236,7 +250,6 @@ function main() // Gameloop
             {
                 testmap.x_pos = WINDOW_WIDTH - 10; // Teleported to the right of the screen (1024).
             }
-
             
             // DRAW (fun todo) - Draw everything here
             CTX.clearRect(0,0, CANVAS.width, CANVAS.height); // This clean the canvas at each frame
