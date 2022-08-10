@@ -43,7 +43,7 @@ window.addEventListener("load", function(){
         draw(context){
             //context.fillStyle = 'white';
             //context.fillRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
         }
         update(input){
             if(input.keys.indexOf("ArrowRight") > -1){
@@ -105,12 +105,14 @@ window.addEventListener("load", function(){
             this.y = this.game_height - this.height;
             this.image = document.getElementById("enemyImage");
             this.speed = 8;
+            this.marked_for_deletion = false;
         }
         draw(context){
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         update(){
             this.x-= this.speed;
+            if (this.x < 0 - this.width) this.marked_for_deletion = true;
         }
     }
 
@@ -127,6 +129,7 @@ window.addEventListener("load", function(){
             enemy.draw(ctx);
             enemy.update();
         });
+        enemies = enemies.filter(enemy => !enemy.marked_for_deletion)
     }
 
     function displayText(){
@@ -147,7 +150,7 @@ window.addEventListener("load", function(){
         last_time = timeStamp;
         ctx.clearRect(0,0, canvas.width, canvas.height)        
         background.draw(ctx);
-        background.update();
+        //background.update();
         player.draw(ctx)
         player.update(input);
         handleEnemies(deltaTime);
