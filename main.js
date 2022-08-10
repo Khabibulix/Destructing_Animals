@@ -1,3 +1,5 @@
+"use strict";
+
 // CANVAS INIT
 const CANVAS = document.getElementById("game");
 const CTX = CANVAS.getContext("2d"); // Context, to use to draw in
@@ -9,9 +11,19 @@ const WINDOW_HEIGHT = CANVAS.height;
 const WINDOW_X_CENTER = CANVAS.width / 2;
 const WINDOW_Y_CENTER = CANVAS.height / 2;
 const PLAYER_JUMP_HEIGHT = 20;
+const BRICK = new Image();
+
 
 // TILEMAP TESTING CONST
-const TESTMAP = [1, 1, 1, 2, 2, 1, 1, 1, 1, 5, 3, 1, 1, 4, 5, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 4, 3, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 5, 1, 1, 1, 1, 5, 1, 1, 2, 2, 3, 4, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+const TESTMAP = [1, 1, 1, 2, 2, 1, 1, 1,
+                 1, 5, 3, 1, 1, 4, 5, 1,
+                 1, 2, 2, 1, 1, 2, 2, 1,
+                 1, 1, 1, 4, 3, 1, 1, 1,
+                 1, 1, 1, 2, 2, 1, 1, 1,
+                 1, 5, 1, 1, 1, 1, 5, 1,
+                 1, 2, 2, 3, 4, 2, 2, 1,
+                 1, 1, 1, 1, 1, 1, 1, 1];
+
 // A tilemap is just an array of index representing an object to draw in a grid.
 // As it is written in one line, the programmer has to split it in manner to represent the Y axis.
 // So this requires to know the width and the height of it. 
@@ -44,9 +56,11 @@ class Tilemap
             this.y_pos,
             TILE_SIZE,
             TILE_SIZE,
-            "black"
+            "lightblue"
         );
     }
+
+
 }
 
 /**
@@ -68,7 +82,7 @@ class Platformer_Player
             this.y_pos,
             TILE_SIZE,
             TILE_SIZE,
-            "black"
+            "darkblue"
             );
             this.countRed = countRed;
             this.countBlue = countBlue;
@@ -142,9 +156,11 @@ class Platformer_Player
             this.y_pos = new_y_pos;
         }
         
-        draw(){
-            CTX.fillStyle = this.color;
-            CTX.strokeRect(this.x_pos, this.y_pos, this.height, this.width);
+        draw(){            
+            
+            const pattern = CTX.createPattern(BRICK, 'repeat');        
+            CTX.fillStyle = pattern;
+            CTX.fillRect(this.x_pos, this.y_pos, this.height, this.width);
             return CTX;
         }
         
@@ -152,7 +168,9 @@ class Platformer_Player
     
     //OBJECTS INIT
     var player = new Platformer_Player(0,0,0);
-    var testmap = new Tilemap();
+    var testmap = new Tilemap();   
+    BRICK.onload = testmap.draw;
+    BRICK.src = "assets/brick.png";
     
     
     // INPUT MANAGER
@@ -165,14 +183,16 @@ class Platformer_Player
     }
     */
    document.addEventListener("keydown", eventManager, false);
-   function eventManager(event)
+
+//FUNCS
+
+function eventManager(event)
 {
     if (event.key == "ArrowUp"){
         player.jump();
     }
 }
 
-// MAIN
 
 function process()
 {
@@ -212,6 +232,8 @@ function draw(){
     }
 }
 
+// MAIN
+
 function main() // Gameloop
 {
             // PROCESS (fun todo) - Do the maths here
@@ -222,7 +244,7 @@ function main() // Gameloop
             if (testmap.x_pos < WINDOW_X_CENTER - WINDOW_WIDTH)
             // When it reaches the negative middle of the window (-512).
             {
-                testmap.x_pos = WINDOW_WIDTH; // Teleported to the right of the screen (1024).
+                testmap.x_pos = WINDOW_WIDTH - 10; // Teleported to the right of the screen (1024).
             }
 
             
