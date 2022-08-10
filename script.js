@@ -2,12 +2,16 @@ window.addEventListener("load", function(){
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
     const enemies = []
+    const bricks = []
     let score = 0;
     let gameOver = false;
+
+
 
     class InputHandler {
         constructor(){
             this.keys = [];
+            //Here we put the key press in a array
             window.addEventListener('keydown', e =>{
                 if ((e.key === 'ArrowDown' || 
                     e.key === 'ArrowUp' || 
@@ -16,7 +20,8 @@ window.addEventListener("load", function(){
                     && (this.keys.indexOf(e.key) === -1)){ //if key already in keys
                     this.keys.push(e.key);
                 }
-            });            
+            });   
+            //Here we delete key in array if button is released         
             window.addEventListener('keyup', e => {
                 if (e.key === 'ArrowDown' || 
                     e.key === 'ArrowUp' || 
@@ -25,6 +30,30 @@ window.addEventListener("load", function(){
                     this.keys.splice(this.keys.indexOf(e.key), 1);
                 }                
             });
+        }
+    }
+
+    class Brick {
+        constructor(game_width, game_height){
+            this.game_width = game_width;
+            this.game_height = game_height;
+            this.width = 100;
+            this.height = 100;
+            this.x = 200;
+            this.y = 200;
+            this.image = document.getElementById("brickImage");             
+            this.marked_for_deletion = false;
+        }
+        draw(context){
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        }
+        
+        update(){
+            this.x -= this.speed;
+            if (this.x < 0 - this.width) {
+                this.x = 0;                
+                this.marked_for_deletion = false;
+            }
         }
     }
 
@@ -138,14 +167,28 @@ window.addEventListener("load", function(){
         }
     }
 
-        
-    function handleEnemies(deltaTime){
-        if (enemyTimer > enemyInterval + randomEnemyInterval){
-            enemies.push(new Enemy(canvas.width, canvas.height))
-            randomEnemyInterval = Math.random() * 1000 + 500;
-            enemyTimer = 0;
+    function handleBricks(deltaTime){        
+        if (Timer > Interval + randomInterval){
+            bricks.push(new Brick(canvas.width, canvas.height))
+            randomInterval = Math.random() * 1000 + 500;
+            Timer = 0;
         } else {
-            enemyTimer += deltaTime;
+            Timer += deltaTime;
+        }
+        bricks.forEach(brick => {
+            brick.draw(ctx);
+            brick.update(deltaTime);
+        });
+        bricks.filter(brick => !brick.marked_for_deletion);
+    }
+
+    function handleEnemies(deltaTime){
+        if (Timer > Interval + randomInterval){
+            enemies.push(new Enemy(canvas.width, canvas.height))
+            randomInterval = Math.random() * 1000 + 500;
+            Timer = 0;
+        } else {
+            Timer += deltaTime;
         }
         enemies.forEach(enemy => {
             enemy.draw(ctx);
@@ -172,22 +215,25 @@ window.addEventListener("load", function(){
 
     const input = new InputHandler();
     const player =  new Player(canvas.width, canvas.height);
-    const background = new Background(canvas.width, canvas.height);
+    const background = new Background(canvas.width, canvas.height);    
+    const brick = new Brick(canvas.width, canvas.height)
 
     let last_time = 0;
-    let enemyTimer = 0;
-    let enemyInterval = 2000;
-    let randomEnemyInterval = Math.random() * 1000 + 500;
+    let Timer = 0;
+    let Interval = 2000;
+    let randomInterval = Math.random() * 1000 + 500;
 
     function animate(timeStamp){
         const deltaTime = timeStamp - last_time;
         last_time = timeStamp;
-        ctx.clearRect(0,0, canvas.width, canvas.height)        
-        background.draw(ctx);
-        background.update();
+        ctx.clearRect(0,0, canvas.width, canvas.height)      
+        //background.draw(ctx);
+        //background.update();
         player.draw(ctx)
         player.update(input, enemies);
-        handleEnemies(deltaTime);
+        brick.draw(ctx);               
+        //handleBricks(deltaTime);
+        //handleEnemies(deltaTime);
         displayText(ctx);
         if (!gameOver) requestAnimationFrame(animate);
     }
