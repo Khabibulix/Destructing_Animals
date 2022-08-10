@@ -237,11 +237,10 @@ function crawling_dict_for_y_position(ypos){
 // MAIN
 
 function main() // Gameloop
-{
             // PROCESS (fun todo) - Do the maths here
+        {
+
             process();
-            console.log("player xpos: " + player.x_pos)
-            console.log("player ypos: " + player.x_pos)
 
             // TESTING A TILEMAP SCROLLING
             testmap.x_pos -= 1; // Makes the whole thing slide to the left.
