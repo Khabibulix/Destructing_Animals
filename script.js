@@ -2,6 +2,7 @@ window.addEventListener("load", function(){
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
     const enemies = []
+    let score = 0;
 
     class InputHandler {
         constructor(){
@@ -129,11 +130,13 @@ window.addEventListener("load", function(){
             enemy.draw(ctx);
             enemy.update();
         });
-        enemies = enemies.filter(enemy => !enemy.marked_for_deletion)
+        enemies.filter(enemy => !enemy.marked_for_deletion);
     }
 
-    function displayText(){
-
+    function displayText(context){
+        context.fillStyle = "black";
+        context.font = '40px Helvetica';
+        context.fillText("Score: " + score, 20, 50);
     }
 
     const input = new InputHandler();
@@ -150,10 +153,11 @@ window.addEventListener("load", function(){
         last_time = timeStamp;
         ctx.clearRect(0,0, canvas.width, canvas.height)        
         background.draw(ctx);
-        //background.update();
+        background.update();
         player.draw(ctx)
         player.update(input);
         handleEnemies(deltaTime);
+        displayText(ctx);
         requestAnimationFrame(animate);
     }
     animate(0);
