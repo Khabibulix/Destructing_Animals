@@ -41,8 +41,8 @@ window.addEventListener("load", function(){
 
         }
         draw(context){
-            context.fillStyle = 'white';
-            context.fillRect(this.x, this.y, this.width, this.height);
+            //context.fillStyle = 'white';
+            //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         update(input){
