@@ -35,6 +35,8 @@ window.addEventListener("load", function(){
             this.y = this.game_height - this.height;
             this.image = document.getElementById("playerImage");
             this.speed = 0;
+            this.vy = 0;
+            this.weight = 1;
 
         }
         draw(context){
@@ -43,17 +45,31 @@ window.addEventListener("load", function(){
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         update(input){
-            //horizontal mov
-            this.x += this.speed;
             if(input.keys.indexOf("ArrowRight") > -1){
                 this.speed = 5;
             } else if(input.keys.indexOf("ArrowLeft") > -1){
                 this.speed -= 5;
+            } else if(input.keys.indexOf("ArrowUp") > -1){
+                this.vy-= 30;
             } else {
                 this.speed = 0;
-            }
+            }            
+            //horizontal mov            
+            this.x += this.speed;
             if (this.x < 0) this.x = 0;
             else if (this.x > this.game_width - this.width) this.x = this.game_width - this.width
+            //vertical mov
+            this.y += this.vy;
+            if (!this.onGround()){
+                this.vy += this.weight;
+            } else {
+                this.vy = 0;
+            }
+            if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height
+
+        }
+        onGround(){
+            return this.y >= this.game_height - this.height;
         }
     }
 
