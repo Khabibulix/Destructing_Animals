@@ -39,12 +39,16 @@ window.addEventListener("load", function(){
             this.game_height = game_height;
             this.width = 100;
             this.height = 100;
-            this.x = 200;
-            this.y = 200;
+            this.x = 500;
+            this.y = 500;
             this.image = document.getElementById("brickImage");             
             this.marked_for_deletion = false;
         }
-        draw(context){
+        draw(context){            
+            context.beginPath();
+            context.arc(this.x + this.width/2, this.y + (this.height + 50)/2.2, this.width/1.1, 0, Math.PI * 2);            
+            context.strokeStyle = "blue";
+            context.stroke();
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
         
@@ -63,8 +67,10 @@ window.addEventListener("load", function(){
             this.game_height = game_height;
             this.width = 200;
             this.height = 252;
-            this.x = 0;
-            this.y = this.game_height - this.height;
+            this.x = 500;
+            this.y = this.game_height - this.height * 2;
+            //this.x = 0;
+            //this.y = this.game_height - this.height;
             this.image = document.getElementById("playerImage");
             this.speed = 0;
             this.vy = 0;
@@ -80,7 +86,8 @@ window.addEventListener("load", function(){
             context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
         }
         update(input, enemies){
-            //collision detection using Pythagoras
+
+            //collision detection using Pythagoras for enemies
             enemies.forEach(enemy => {
                 const dx = (enemy.x + enemy.width/2) - (this.x + this.width/2);
                 const dy = (enemy.y + enemy.height/2) - (this.y + this.height/2);
@@ -89,6 +96,24 @@ window.addEventListener("load", function(){
                     gameOver = true;
                 }
             });
+            //collision detection for bricks
+            bricks.forEach(brick => {
+                const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
+                const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                //checker x pos ==> this.x < brick.x - brick.width/2 && this.y < brick.y - brick.height/2
+                /**if (this.x < brick.x - brick.width/2 ){                    
+                    this.y = brick.y;
+                    this.x = brick.x;
+                    console.log("this.x = " + this.x + " this.y = " + this.y + " brick.x = " + brick.x + " brick.y = " + brick.y)
+                }*/
+                
+                /**if (distance < brick.height/2 + this.height/2){ //below collision
+                    this.y = brick.y + brick.height/2;
+                    this.vy += 4;
+                }*/
+            });
+
             //controls
             if(input.keys.indexOf("ArrowRight") > -1){
                 this.speed += 1;
@@ -216,7 +241,8 @@ window.addEventListener("load", function(){
     const input = new InputHandler();
     const player =  new Player(canvas.width, canvas.height);
     const background = new Background(canvas.width, canvas.height);    
-    const brick = new Brick(canvas.width, canvas.height)
+    const brick = new Brick(canvas.width, canvas.height);
+    bricks.push(brick);
 
     let last_time = 0;
     let Timer = 0;
