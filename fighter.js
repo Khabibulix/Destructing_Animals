@@ -44,6 +44,81 @@ const MOVECOST_CYAN_DODGE       =   [0 , 10, 10];
 //////////////////////////////////////////////////////////////////////
 
 /**
+ * Simulating a market where a player can buy its moves.
+ */
+class Fighter_Market
+{
+    constructor()
+    {
+
+    }
+    canIBuyThat(player, move) // Return True if the player can buy it, False otherwise.
+    {
+        switch (move) {
+            case MOVE_GUARD: return true;
+            case MOVE_RED_STRIKE:
+            if
+            (
+                player.money[0] >= MOVECOST_RED_STRIKE[0]
+                ||
+                player.money[1] >= MOVECOST_RED_STRIKE[1] + 40
+                ||
+                player.money[2] >= MOVECOST_RED_STRIKE[2] + 20
+            ) return true; break;
+            case MOVE_BLUE_SHIELD:
+            if
+            (
+                player.money[0] >= MOVECOST_BLUE_SHIELD[0] + 20
+                ||
+                player.money[1] >= MOVECOST_BLUE_SHIELD[1]
+                ||
+                player.money[2] >= MOVECOST_BLUE_SHIELD[2] + 40
+            ) return true; break;
+            case MOVE_GREEN_WARMUP:
+            if
+            (
+                player.money[0] >= MOVECOST_GREEN_WARMUP[0] + 40
+                ||
+                player.money[1] >= MOVECOST_GREEN_WARMUP[1] + 20
+                ||
+                player.money[2] >= MOVECOST_GREEN_WARMUP[2]
+            ) return true; break;
+            case MOVE_MAGENTA_SHOCK:
+            if
+            (
+                player.money[0] >= MOVECOST_MAGENTA_SHOCK[0]
+                &&
+                player.money[1] >= MOVECOST_MAGENTA_SHOCK[1]
+                &&
+                player.money[2] >= MOVECOST_MAGENTA_SHOCK[2]
+            ) return true; break;
+            case MOVE_YELLOW_LIGHTNING:
+            if
+            (
+                player.money[0] >= MOVECOST_YELLOW_LIGHTNING[0]
+                &&
+                player.money[1] >= MOVECOST_YELLOW_LIGHTNING[1]
+                &&
+                player.money[2] >= MOVECOST_YELLOW_LIGHTNING[2]
+            ) return true; break;
+            case MOVE_CYAN_DODGE:
+            if
+            (
+                player.money[0] >= MOVECOST_CYAN_DODGE[0]
+                &&
+                player.money[1] >= MOVECOST_CYAN_DODGE[1]
+                &&
+                player.money[2] >= MOVECOST_CYAN_DODGE[2]
+            ) return true; break;
+            default:
+                false;
+            }
+            return false;
+        }
+}
+
+
+/**
  * Player's character in Fighter mode
  * @constructor
  * @param {Number} countRed - The ammount of red collected.
@@ -53,18 +128,15 @@ const MOVECOST_CYAN_DODGE       =   [0 , 10, 10];
  */
 class Fighter_Player
 {
-    constructor(health=100, countRed, countBlue, countGreen)
+    constructor(health=100, countRed=0, countBlue=0, countGreen=0)
     {
+        this.money = [countRed, countBlue, countGreen]; // Used to calculate the whole cost.
         // Color count
-        this.health = health
+        this.health = health;
         this.attack = countRed;
         this.defense = countBlue;
         this.speed = countGreen;
         this.moveList = []; // Array of Move object.
-        // Used to calculate the whole cost.
-        this.moneyRed = countRed;
-        this.moneyBlue = countBlue;
-        this.moneyGreen = countGreen;
     }
     addMove(move)
     {
@@ -90,9 +162,10 @@ class Fighter_Move
 ///////////////////////  / OBJECTS INIT /  / /////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+var market = new Fighter_Market();
 var mymove = new Fighter_Move(MOVE_GUARD);
-var player = new Fighter_Player(100, 100, 100);
-var opponent = new Fighter_Player(100, 100, 100);
+var player = new Fighter_Player(100, 100, 100, 100);
+var opponent = new Fighter_Player(100, 100, 100, 100);
 
 
 //////////////////////////////////////////////////////////////////////
