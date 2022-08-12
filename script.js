@@ -98,20 +98,12 @@ window.addEventListener("load", function(){
             });
             //collision detection for bricks
             bricks.forEach(brick => {
-                const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
-                const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                //checker x pos ==> this.x < brick.x - brick.width/2 && this.y < brick.y - brick.height/2
-                /**if (this.x < brick.x - brick.width/2 ){                    
-                    this.y = brick.y;
-                    this.x = brick.x;
-                    console.log("this.x = " + this.x + " this.y = " + this.y + " brick.x = " + brick.x + " brick.y = " + brick.y)
-                }*/
-                
-                /**if (distance < brick.height/2 + this.height/2){ //below collision
-                    this.y = brick.y + brick.height/2;
-                    this.vy += 4;
-                }*/
+                const hit_box_width_of_the_brick = brick.x - brick.width/2
+                const distance_of_brick_from_right_border = ((game.width - brick.x) - hit_box_width_of_the_brick) - 90;
+                //checker x pos ==> hit_box_width_of_the_brick < this.x 
+                if (this.x > distance_of_brick_from_right_border && this.x < brick.x){
+                    console.table("on brick")
+                }
             });
 
             //controls
