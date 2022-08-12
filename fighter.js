@@ -24,13 +24,27 @@ const MOVE_MAGENTA_SHOCK    =   4;
 const MOVE_YELLOW_LIGHTNING =   5;
 const MOVE_CYAN_DODGE       =   6;
 // Moves cost
+    /* Free */
 const MOVECOST_GUARD            =   [0 , 0 , 0 ];
+    /* Pure */
 const MOVECOST_RED_STRIKE       =   [10, 0 , 0 ];
 const MOVECOST_BLUE_SHIELD      =   [0 , 10, 0 ];
 const MOVECOST_GREEN_WARMUP     =   [0 , 0 , 10];
-const MOVECOST_MAGENTA_SHOCK    =   [10, 10, 0 ];
-const MOVECOST_YELLOW_LIGHTNING =   [10, 0 , 10];
-const MOVECOST_CYAN_DODGE       =   [0 , 10, 10];
+    /* Hybrid with alternative costs */
+const MOVECOST_MAGENTA_SHOCK0   =   [10, 10, 0 ]; // Classic
+const MOVECOST_MAGENTA_SHOCK1   =   [0 , 10, 20]; // Split 30
+const MOVECOST_MAGENTA_SHOCK2   =   [30 ,0 , 0 ]; // 30
+const MOVECOST_MAGENTA_SHOCK3   =   [20, 0 , 20]; // 40
+/**/
+const MOVECOST_YELLOW_LIGHTNING0=   [10, 0 , 10]; // Classic
+const MOVECOST_YELLOW_LIGHTNING1=   [10, 20, 0 ]; // Split 30
+const MOVECOST_YELLOW_LIGHTNING2=   [0 , 0 , 30]; // 30
+const MOVECOST_YELLOW_LIGHTNING3=   [0 , 20, 20]; // 40
+/**/
+const MOVECOST_CYAN_DODGE0      =   [0 , 10, 10]; // Classic
+const MOVECOST_CYAN_DODGE1      =   [20, 0 , 10]; // Split 30
+const MOVECOST_CYAN_DODGE2      =   [0 , 30, 0 ]; // 30
+const MOVECOST_CYAN_DODGE3      =   [20, 20, 0 ]; // 40
 
 
 //////////////////////////////////////////////////////////////////////
@@ -52,79 +66,118 @@ class Fighter_Market
     {
 
     }
-    canIBuyThat(player, move) // Return True if the player can buy it, False otherwise.
+    /**
+     * Checks if the chosen pure move can be bought by a player.
+     * @param {Fighter_Player} player Player.
+     * @param {Number[]} movecost Array of 3 Number representing the cost of the move.
+     * @param {Number} r Red "conversion tax" (Default = 0).
+     * @param {Number} b Blue "conversion tax" (Default = 0).
+     * @param {Number} g Green "conversion tax" (Default = 0).
+     * @returns True if the player can buy it, False otherwise.
+     */
+    checkPureMoveCost(player, movecost, r=0, b=0, g=0)
+    {
+        if
+        (
+            player.money[0] >= movecost[0] + r
+            ||
+            player.money[1] >= movecost[1] + b
+            ||
+            player.money[2] >= movecost[2] + g
+        ) return true;
+        return false;
+    }
+    /**
+     * Checks if the chosen hybrid move can be bought by a player.
+     * @param {Fighter_Player} player Player.
+     * @param {Number[]} movecost Array of 3 Number representing the cost of the move.
+     * @returns True if the player can buy it, False otherwise.
+     */
+    checkHybridMoveCost(player, movecost)
+    {
+        if
+        (
+            player.money[0] >= movecost[0]
+            &&
+            player.money[1] >= movecost[1]
+            &&
+            player.money[2] >= movecost[2]
+        ) return true;
+        return false;
+    }
+    /**
+     * Checks if the chosen move can be bought by a player.
+     * @param {Fighter_Player} player Player.
+     * @param {Number} move Move ID.
+     * @returns True if the player can buy it, False otherwise. 
+     */
+    canIBuyThat(player, move) //
     {
         switch (move) {
             case MOVE_GUARD: return true;
-            case MOVE_RED_STRIKE:
-            if
-            (
-                player.money[0] >= MOVECOST_RED_STRIKE[0]
-                ||
-                player.money[1] >= MOVECOST_RED_STRIKE[1] + 40
-                ||
-                player.money[2] >= MOVECOST_RED_STRIKE[2] + 20
-            ) return true; break;
-            case MOVE_BLUE_SHIELD:
-            if
-            (
-                player.money[0] >= MOVECOST_BLUE_SHIELD[0] + 20
-                ||
-                player.money[1] >= MOVECOST_BLUE_SHIELD[1]
-                ||
-                player.money[2] >= MOVECOST_BLUE_SHIELD[2] + 40
-            ) return true; break;
-            case MOVE_GREEN_WARMUP:
-            if
-            (
-                player.money[0] >= MOVECOST_GREEN_WARMUP[0] + 40
-                ||
-                player.money[1] >= MOVECOST_GREEN_WARMUP[1] + 20
-                ||
-                player.money[2] >= MOVECOST_GREEN_WARMUP[2]
-            ) return true; break;
+            case MOVE_RED_STRIKE: return this.checkPureMoveCost(player, MOVECOST_RED_STRIKE, 0, 40,20);
+            case MOVE_BLUE_SHIELD: return this.checkPureMoveCost(player, MOVECOST_BLUE_SHIELD, 20, 0, 40);
+            case MOVE_GREEN_WARMUP: return this.checkPureMoveCost(player, MOVECOST_GREEN_WARMUP, 40, 20, 0);
             case MOVE_MAGENTA_SHOCK:
             if
             (
-                player.money[0] >= MOVECOST_MAGENTA_SHOCK[0]
-                &&
-                player.money[1] >= MOVECOST_MAGENTA_SHOCK[1]
-                &&
-                player.money[2] >= MOVECOST_MAGENTA_SHOCK[2]
+                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK0)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK1)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK2)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK3)
             ) return true; break;
             case MOVE_YELLOW_LIGHTNING:
             if
             (
-                player.money[0] >= MOVECOST_YELLOW_LIGHTNING[0]
-                &&
-                player.money[1] >= MOVECOST_YELLOW_LIGHTNING[1]
-                &&
-                player.money[2] >= MOVECOST_YELLOW_LIGHTNING[2]
+                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING0)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING1)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING2)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING3)
             ) return true; break;
             case MOVE_CYAN_DODGE:
             if
             (
-                player.money[0] >= MOVECOST_CYAN_DODGE[0]
-                &&
-                player.money[1] >= MOVECOST_CYAN_DODGE[1]
-                &&
-                player.money[2] >= MOVECOST_CYAN_DODGE[2]
+                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE0)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE1)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE2)
+                ||
+                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE3)
             ) return true; break;
-            default:
-                false;
-            }
-            return false;
+            default: break;
         }
+        return false;
+    }
+    /**
+     * Allows a player to buy a move if it has the ressources.
+     * @param {Fighter_Player} player Player.
+     * @param {Number} move Move ID.
+     * @returns Nothing.
+     */
+    buy(player, move)
+    {
+        if(this.canIBuyThat(player, move)){ // Just in case, but it is supposed to be already checked before the call.
+            // TODO : get the cost and make the player pay it.
+            player.addMove(move);
+        }
+    }
 }
 
 
 /**
  * Player's character in Fighter mode
  * @constructor
- * @param {Number} countRed - The ammount of red collected.
- * @param {Number} countBlue - The ammount of blue collected.
- * @param {Number} countGreen - The ammount of green collected.
- * @param {Number} health - Current health (Default = 100)
+ * @param {Number} health - Current health (Default = 100).
+ * @param {Number} countRed - The amount of red collected (Default = 0).
+ * @param {Number} countBlue - The amount of blue collected (Default = 0).
+ * @param {Number} countGreen - The amount of green collected (Default = 0).
  */
 class Fighter_Player
 {
@@ -136,34 +189,23 @@ class Fighter_Player
         this.attack = countRed;
         this.defense = countBlue;
         this.speed = countGreen;
-        this.moveList = []; // Array of Move object.
+        this.moveArray = []; // Array of move.
     }
+    /**
+     * Adds a move to the array of move.
+     * @param {Number} move Move ID. 
+     */
     addMove(move)
     {
-        this.moveList.push(move); 
+        this.moveArray.push(move); 
     }
 }
-
-/**
- * A fighting move
- * @constructor
- * @param {Number} move - The id of the move to play.
- */
-class Fighter_Move
-{
-    constructor(move)
-    {
-        this.move = move;
-    }
-}
-
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / OBJECTS INIT /  / /////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 var market = new Fighter_Market();
-var mymove = new Fighter_Move(MOVE_GUARD);
 var player = new Fighter_Player(100, 100, 100, 100);
 var opponent = new Fighter_Player(100, 100, 100, 100);
 
