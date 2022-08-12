@@ -40,17 +40,26 @@ const MOVE_CYAN_DODGE       =   6;
  * @param {Number} countRed - The ammount of red collected.
  * @param {Number} countBlue - The ammount of blue collected.
  * @param {Number} countGreen - The ammount of green collected.
+ * @param {Number} health - Current health (Default = 100)
  */
 class Fighter_Player
 {
-    constructor(countRed, countBlue, countGreen)
+    constructor(health=100, countRed, countBlue, countGreen)
     {
         // Color count
-        this.health = 100;
+        this.health = health
         this.attack = countRed;
         this.defense = countBlue;
         this.speed = countGreen;
-        this.moveList = []; // List of Move object.
+        this.moveList = []; // Array of Move object.
+        // Used to calculate the whole cost.
+        this.moneyRed = countRed;
+        this.moneyBlue = countBlue;
+        this.moneyGreen = countGreen;
+    }
+    addMove(move)
+    {
+        this.moveList.push(move); 
     }
 }
 
@@ -73,6 +82,8 @@ class Fighter_Move
 //////////////////////////////////////////////////////////////////////
 
 var mymove = new Fighter_Move(MOVE_GUARD);
+var player = new Fighter_Player(100, 100, 100);
+var opponent = new Fighter_Player(100, 100, 100);
 
 
 //////////////////////////////////////////////////////////////////////
