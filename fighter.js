@@ -79,13 +79,8 @@ var mymove = new Fighter_Move(MOVE_GUARD);
 ////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-document.addEventListener("keydown", eventManager, false);
-function eventManager(event)
-{
-    if (event.key == "ArrowUp"){
-        player.jump();
-    }
-}
+document.addEventListener("keydown", none, false);
+function none(){};
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / GAME FUNCTIONS /  / ///////////////////////
