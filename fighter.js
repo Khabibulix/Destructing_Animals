@@ -96,14 +96,69 @@ function fighterProcess()
 
 }
 
-function fighterDraw()
+function fighterDraw() // Dirty way
 {
-    // CLEAN
+    //// CLEAN
     CTX.clearRect(0,0, CANVAS.width, CANVAS.height);
-    // BACKGROUND
-    CTX.fillStyle = "#ffffff";
+    //// BACKGROUND
+    CTX.fillStyle = "white";
     CTX.fillRect(0,0, CANVAS.width, CANVAS.height);
-    // ELEMENT
+    //// ELEMENT
+    CTX.fillStyle = "black";
+    CTX.fillRect(CANVAS.width*0.33,0,1,CANVAS.height); // Left pannel
+    CTX.fillRect(
+        CANVAS.width*0.33,
+        CANVAS.height*0.2,
+        CANVAS.width,
+        1
+    ); // UP right pannel
+    CTX.fillRect(
+        CANVAS.width*0,
+        CANVAS.height*0.8,
+        CANVAS.width,
+        1
+    ); // Bottom right pannel
+    //// MOVELIST
+    CTX.font = "30px Arial";
+    CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
+    CTX.fillText("GEMS", CANVAS.width*0.1, CANVAS.height*0.9);
+    CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.1);
+    CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.9);
+    CTX.fillStyle = "red";
+    CTX.fillText("Red Strike", CANVAS.width*0.05, 100);
+    CTX.fillStyle = "blue";
+    CTX.fillText("Blue Shield", CANVAS.width*0.05, 150);
+    CTX.fillStyle = "green";
+    CTX.fillText("Green Warm-up", CANVAS.width*0.05, 200);
+    CTX.fillStyle = "magenta";
+    CTX.fillText("Magenta Shock", CANVAS.width*0.05, 250);
+    CTX.fillStyle = "yellow";
+    CTX.fillText("Yellow Lightning", CANVAS.width*0.05, 300);
+    CTX.fillStyle = "cyan";
+    CTX.fillText("Cyan Dodge", CANVAS.width*0.05, 350);
+    CTX.fillStyle = "black";
+    CTX.fillText("DONE", CANVAS.width*0.05, 400);
+    //// PLAYERS
+    // P1
+    CTX.fillStyle = "black";
+    CTX.fillRect(CANVAS.width*0.5,CANVAS.height*0.5,100,100);
+    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.35,150,10);
+    CTX.fillStyle = "red";
+    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.38,150,10);
+    CTX.fillStyle = "blue";
+    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.41,150,10);
+    CTX.fillStyle = "green";
+    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.44,150,10);
+    // P2
+    CTX.fillStyle = "black";
+    CTX.fillRect(CANVAS.width*0.7,CANVAS.height*0.5,100,100);
+    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.35,150,10);
+    CTX.fillStyle = "red";
+    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.38,150,10);
+    CTX.fillStyle = "blue";
+    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.41,150,10);
+    CTX.fillStyle = "green";
+    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.44,150,10);
 }
 
 function fighterGameloop()
