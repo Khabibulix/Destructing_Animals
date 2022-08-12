@@ -69,8 +69,6 @@ window.addEventListener("load", function(){
             this.height = 252;
             this.x = 500;
             this.y = this.game_height - this.height * 2;
-            //this.x = 0;
-            //this.y = this.game_height - this.height;
             this.image = document.getElementById("playerImage");
             this.speed = 0;
             this.vy = 0;
@@ -98,12 +96,20 @@ window.addEventListener("load", function(){
             });
             //collision detection for bricks
             bricks.forEach(brick => {
-                const hit_box_width_of_the_brick = brick.x - brick.width/2
+                /**const hit_box_width_of_the_brick = brick.x - brick.width/2
                 const distance_of_brick_from_right_border = ((game.width - brick.x) - hit_box_width_of_the_brick) - 90;
                 //checker x pos ==> hit_box_width_of_the_brick < this.x 
                 if (this.x > distance_of_brick_from_right_border && this.x < brick.x){
                     console.table("on brick")
-                }
+                }*/
+                bricks.forEach(brick => {
+                    const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
+                    const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < brick.width/2 + this.width/2){
+                        console.log("test")
+                    }
+                });
             });
 
             //controls
