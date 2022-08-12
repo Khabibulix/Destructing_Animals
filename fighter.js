@@ -72,8 +72,6 @@ class Fighter_Move
 ///////////////////////  / OBJECTS INIT /  / /////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-var player = new Platformer_Player(0,0,0);
-var testmap = new Tilemap();
 var mymove = new Fighter_Move(MOVE_GUARD);
 
 
@@ -100,9 +98,12 @@ function fighterProcess()
 
 function fighterDraw()
 {
+    // CLEAN
     CTX.clearRect(0,0, CANVAS.width, CANVAS.height);
-    CTX.strokeRect(0, 0, 50, 50);
-
+    // BACKGROUND
+    CTX.fillStyle = "#ffffff";
+    CTX.fillRect(0,0, CANVAS.width, CANVAS.height);
+    // ELEMENT
 }
 
 function fighterGameloop()
