@@ -23,6 +23,15 @@ const MOVE_GREEN_WARMUP     =   3;
 const MOVE_MAGENTA_SHOCK    =   4;
 const MOVE_YELLOW_LIGHTNING =   5;
 const MOVE_CYAN_DODGE       =   6;
+// Moves cost
+const MOVECOST_GUARD            =   [0 , 0 , 0 ];
+const MOVECOST_RED_STRIKE       =   [10, 0 , 0 ];
+const MOVECOST_BLUE_SHIELD      =   [0 , 10, 0 ];
+const MOVECOST_GREEN_WARMUP     =   [0 , 0 , 10];
+const MOVECOST_MAGENTA_SHOCK    =   [10, 10, 0 ];
+const MOVECOST_YELLOW_LIGHTNING =   [10, 0 , 10];
+const MOVECOST_CYAN_DODGE       =   [0 , 10, 10];
+
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////  / GLOBALS /  / ///////////////////////////
