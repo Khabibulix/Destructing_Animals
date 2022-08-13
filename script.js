@@ -106,8 +106,12 @@ window.addEventListener("load", function(){
                     const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
                     const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < brick.width/2 + this.width/2){
-                        console.log("test")
+
+                    if (distance < brick.width/2 + this.width/2 - 30){ //handling shock from left
+                        this.x = brick.x - brick.width - 30;
+                        if(input.keys.indexOf("ArrowRight") > -1){
+                            this.speed = 0;
+                        }
                     }
                 });
             });
