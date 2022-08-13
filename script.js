@@ -39,14 +39,14 @@ window.addEventListener("load", function(){
             this.width = 100;
             this.height = 100;
             this.x = this.game_width;
-            this.y = this.game_height - this.height * 2;
+            this.y = this.game_height - this.height * 4;
             this.image = document.getElementById("brickImage");   
             this.speed = 6;          
             this.marked_for_deletion = false;
         }
         draw(context){            
             context.beginPath();         
-            context.strokeRect(this.x - 10, this.y - 10, this.width + 20, this.height + 20);            
+            context.strokeRect(this.x, this.y, this.width, this.height);            
             context.strokeStyle = "blue";
             context.stroke();
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -76,7 +76,7 @@ window.addEventListener("load", function(){
         }
         draw(context){
             context.beginPath();
-            context.strokeRect(this.x + 20, this.y + 40, this.width - 40, this.height);
+            context.strokeRect(this.x, this.y, this.width, this.height);
             context.stroke();
             //context.fillStyle = 'white';
             //context.fillRect(this.x, this.y, this.width, this.height);
@@ -86,31 +86,25 @@ window.addEventListener("load", function(){
             this.weight =  1;
             bricks.forEach(brick => {
                                 
-                //checking left side of brick
-
-                if (this.x < brick.x + brick.width && this.x + this.width > brick.x && brick.y < brick.y + brick.height && this.height + this.y > brick.y){        
-                    this.x = brick.x - brick.width - 100;
-                    this.speed = 0; 
+                if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {
                     
-                    if (this.x < 50){
-                        this.y = this.game_height - this.height * 3;
-                        this.x = 250;
-                        this.weight = 0.5;
+                    if (this.x  < brick.x ){ 
+                        if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
+                            this.x = brick.x - brick.width - 90;
+                            this.speed = 0;
+                        }
+                    } else {
+                        console.log("right touch")
                     }
-
-                    if(this.x > brick.x){
-                        this.x = brick.x + brick.width;
-                        this.speed = 0; 
-                    }    
-                                     
+                    
+                    /**if (brick.y < brick.y + brick.height && this.height + this.y > brick.y){
+                        if (this.y < brick.y){
+                            console.log("bottom touch")
+                        } else {
+                            console.log("top touch")
+                        }
+                    }*/
                 }
-
-                /**if (dx < 10 && dy > 100 && this.vy < 0){
-                //if (this.vy < 0 && distance < brick.width/2 + this.width/2 && brick.x < this.y < brick.x + brick.width){
-                    console.log(dy)
-                    //this.y = brick.y + brick.width/2 + brick.height * 2
-
-                }*/
 
             });
 
