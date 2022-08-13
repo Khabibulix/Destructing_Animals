@@ -86,33 +86,26 @@ window.addEventListener("load", function(){
 
             //collision detection using Pythagoras for bricks
             bricks.forEach(brick => {
-                /**const hit_box_width_of_the_brick = brick.x - brick.width/2
-                const distance_of_brick_from_right_border = ((game.width - brick.x) - hit_box_width_of_the_brick) - 90;
-                //checker x pos ==> hit_box_width_of_the_brick < this.x 
-                if (this.x > distance_of_brick_from_right_border && this.x < brick.x){
-                    console.table("on brick")
-                }*/
                 const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
                 const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
                 const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < brick.width/2 + this.width/2 - 30){ //handling shock from left
+                
+                //chceckin left side of brick
+                if (distance < brick.width/2 + this.width/2 - 30 && this.x < brick.x){ 
                     this.x = brick.x - brick.width - 30;
-
-                    if(input.keys.indexOf("ArrowRight") > -1){
-                        this.speed = 0;
+                    this.speed = 0; 
+                    if (this.x < 100){
+                        this.y = this.game_height - this.height * 3;
+                        this.x = 250;
+                        this.weight = 0.5;
                     }
-
-                    if(input.keys.indexOf("ArrowLeft") > -1){ 
-                        this.x = brick.x + brick.width;
-                    }
-
-                    if(!this.onGround){
-                        this.x = brick.x + brick.width;
-                    }
-                        
-                        
                 }
+
+                if( distance < brick.width/2 + this.width/2 - 30 && this.x > brick.x){
+                    this.x = brick.x + brick.width - 300;
+                    this.speed = 0;
+                }
+
             });
 
             //controls
