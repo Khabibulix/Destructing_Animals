@@ -218,6 +218,27 @@ document.addEventListener("keydown", none, false);
 function none(){};
 
 //////////////////////////////////////////////////////////////////////
+///////////////////////  / TESTING TOOLS /  / ////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Print to the log all the essentials informations of current state of the fighting game.
+ */
+function printGameState()
+{
+    console.log("HP --- " + player.health + " VS " + opponent.health);
+    console.log("ATK -- " + player.attack + " VS " + opponent.attack);
+    console.log("DEF -- " + player.defense + " VS " + opponent.defense);
+    console.log("SPD -- " + player.speed + " VS " + opponent.speed);
+    console.log(
+        "MOVE - " +
+        player.moveArray[player.moveArray.length - 1]
+        + " VS " +
+        opponent.moveArray[player.moveArray.length - 1]  
+    );
+}
+
+//////////////////////////////////////////////////////////////////////
 ///////////////////////  / GAME FUNCTIONS /  / ///////////////////////
 //////////////////////////////////////////////////////////////////////
 
