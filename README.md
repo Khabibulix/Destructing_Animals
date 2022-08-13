@@ -5,4 +5,4 @@
 
 <h2> Future improvements:</h2>
     <pre>
-    --->   
+    --->   Adding sprite for "end of scrolling"
