@@ -84,57 +84,33 @@ window.addEventListener("load", function(){
         }
         update(input, bricks){
             this.weight =  1;
-            //collision detection using Pythagoras for bricks
             bricks.forEach(brick => {
-                const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
-                const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const hit_box_width_of_the_brick = brick.x - brick.width/2
-                const distance_of_brick_from_right_border = ((game.width - brick.x) - hit_box_width_of_the_brick) - 90
-                
-                /**
+                                
                 //checking left side of brick
-                if (distance < brick.width/2 + this.width/2 - 30 && this.x < brick.x){ 
-                    this.x = brick.x - brick.width - 30;
+
+                if (this.x < brick.x + brick.width && this.x + this.width > brick.x && brick.y < brick.y + brick.height && this.height + this.y > brick.y){        
+                    this.x = brick.x - brick.width - 100;
                     this.speed = 0; 
-
-                    //teleporting if at left side of screen and pushed by brick
-                    if (this.x < 50){
-                        this.y = this.game_height - this.height * 3;
-                        this.x = 250;
-                        this.weight = 0.5;
-                    }
-
-                                        
-                }
-                */
-                /**
-                //checking right side of brick
-                if( distance < brick.width/2 + this.width/2 + 30 && this.x > brick.x){
-                    this.x = brick.x - brick.width + 150;
-                    this.speed = 0;
-
-                    //"exit" the brick
-                    if(input.keys.indexOf("ArrowRight") > -1){
-                        this.speed += 0.4;
-                        this.x += 6
-                        0;
-                    }
                     
-                    //teleporting if at left side of screen and pushed by brick
                     if (this.x < 50){
                         this.y = this.game_height - this.height * 3;
                         this.x = 250;
                         this.weight = 0.5;
                     }
-                }*/
 
-                if (dx < 10 && dy > 100 && this.vy < 0){
+                    if(this.x > brick.x){
+                        this.x = brick.x + brick.width;
+                        this.speed = 0; 
+                    }    
+                                     
+                }
+
+                /**if (dx < 10 && dy > 100 && this.vy < 0){
                 //if (this.vy < 0 && distance < brick.width/2 + this.width/2 && brick.x < this.y < brick.x + brick.width){
                     console.log(dy)
                     //this.y = brick.y + brick.width/2 + brick.height * 2
 
-                }
+                }*/
 
             });
 
