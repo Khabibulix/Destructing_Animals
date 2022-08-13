@@ -1,7 +1,6 @@
 window.addEventListener("load", function(){
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
-    const enemies = []
     const bricks = []
     let score = 0;
     let gameOver = false;
@@ -83,18 +82,9 @@ window.addEventListener("load", function(){
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
         }
-        update(input, enemies){
+        update(input, bricks){
 
-            //collision detection using Pythagoras for enemies
-            enemies.forEach(enemy => {
-                const dx = (enemy.x + enemy.width/2) - (this.x + this.width/2);
-                const dy = (enemy.y + enemy.height/2) - (this.y + this.height/2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < enemy.width/2 + this.width/2){
-                    gameOver = true;
-                }
-            });
-            //collision detection for bricks
+            //collision detection using Pythagoras for bricks
             bricks.forEach(brick => {
                 /**const hit_box_width_of_the_brick = brick.x - brick.width/2
                 const distance_of_brick_from_right_border = ((game.width - brick.x) - hit_box_width_of_the_brick) - 90;
@@ -102,18 +92,27 @@ window.addEventListener("load", function(){
                 if (this.x > distance_of_brick_from_right_border && this.x < brick.x){
                     console.table("on brick")
                 }*/
-                bricks.forEach(brick => {
-                    const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
-                    const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                const dx = (brick.x + brick.width/2) - (this.x + this.width/2);
+                const dy = (brick.y + brick.height/2) - (this.y + this.height/2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < brick.width/2 + this.width/2 - 30){ //handling shock from left
-                        this.x = brick.x - brick.width - 30;
-                        if(input.keys.indexOf("ArrowRight") > -1){
-                            this.speed = 0;
-                        }
+                if (distance < brick.width/2 + this.width/2 - 30){ //handling shock from left
+                    this.x = brick.x - brick.width - 30;
+
+                    if(input.keys.indexOf("ArrowRight") > -1){
+                        this.speed = 0;
                     }
-                });
+
+                    if(input.keys.indexOf("ArrowLeft") > -1){ 
+                        this.x = brick.x + brick.width;
+                    }
+
+                    if(!this.onGround){
+                        this.x = brick.x + brick.width;
+                    }
+                        
+                        
+                }
             });
 
             //controls
@@ -140,6 +139,7 @@ window.addEventListener("load", function(){
             if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height
 
         }
+
         onGround(){
             return this.y >= this.game_height - this.height;
         }
@@ -166,34 +166,6 @@ window.addEventListener("load", function(){
         }
     }
 
-    class Enemy {
-        constructor(game_width, game_height){
-            this.game_width = game_width;
-            this.game_height = game_height;
-            this.width = 200;
-            this.height = 160;            
-            this.x = this.game_width;
-            this.y = this.game_height - this.height;
-            this.maxFrame = 5;
-            this.image = document.getElementById("enemyImage");
-            this.speed = 8;
-            this.marked_for_deletion = false;
-        }
-        draw(context){        
-            context.beginPath();
-            context.arc(this.x + this.width/2, this.y + (this.height+50)/2, this.width/2, 0, Math.PI * 2);
-            context.stroke();
-            context.drawImage(this.image, this.x, this.y, this.width, this.height);
-        }
-        update(deltaTime){
-            this.x-= this.speed;
-            if (this.x < 0 - this.width){
-                this.marked_for_deletion = true;
-            } 
-            
-        }
-    }
-
     function handleBricks(deltaTime){        
         if (Timer > Interval + randomInterval){
             bricks.push(new Brick(canvas.width, canvas.height))
@@ -207,21 +179,6 @@ window.addEventListener("load", function(){
             brick.update(deltaTime);
         });
         bricks.filter(brick => !brick.marked_for_deletion);
-    }
-
-    function handleEnemies(deltaTime){
-        if (Timer > Interval + randomInterval){
-            enemies.push(new Enemy(canvas.width, canvas.height))
-            randomInterval = Math.random() * 1000 + 500;
-            Timer = 0;
-        } else {
-            Timer += deltaTime;
-        }
-        enemies.forEach(enemy => {
-            enemy.draw(ctx);
-            enemy.update(deltaTime);
-        });
-        enemies.filter(enemy => !enemy.marked_for_deletion);
     }
 
     function displayText(context){        
@@ -256,9 +213,8 @@ window.addEventListener("load", function(){
         //background.draw(ctx);
         //background.update();
         player.draw(ctx)
-        player.update(input, enemies);              
+        player.update(input, bricks);              
         handleBricks(deltaTime);
-        //handleEnemies(deltaTime);
         displayText(ctx);
         if (!gameOver) requestAnimationFrame(animate);
     }
