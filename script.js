@@ -95,7 +95,24 @@ window.addEventListener("load", function(){
                     this.x = brick.x - brick.width - 30;
                     this.speed = 0; 
 
-                    //Redrawing player elsewhere
+                    
+                    if (this.x < 100){
+                        this.y = this.game_height - this.height * 3;
+                        this.x = 250;
+                        this.weight = 0.5;
+                    }
+                                        
+                }
+
+                if( distance < brick.width/2 + this.width/2 + 30 && this.x > brick.x){
+                    this.x = brick.x - brick.width + 150;
+                    this.speed = 0;
+
+                    if(input.keys.indexOf("ArrowRight") > -1){
+                        this.speed += 0.4;
+                        this.x += 60;
+                    }
+                    
                     if (this.x < 100){
                         this.y = this.game_height - this.height * 3;
                         this.x = 250;
@@ -103,14 +120,6 @@ window.addEventListener("load", function(){
                     }
                 }
 
-                if( distance < brick.width/2 + this.width/2 + 30 && this.x > brick.x){
-                    this.x = brick.x - brick.width + 150;
-                    this.speed = 0;
-                    if(input.keys.indexOf("ArrowRight") > -1){
-                        this.speed += 1;
-                        this.x += 100;
-                    }
-                }
 
             });
 
