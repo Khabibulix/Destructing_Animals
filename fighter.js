@@ -190,6 +190,7 @@ class Fighter_Player
         this.defense = countBlue;
         this.speed = countGreen;
         this.moveArray = []; // Array of move.
+        this.dodge = 0; // Used by Cyan Dodge move.
     }
     /**
      * Adds a move to the array of move.
@@ -199,6 +200,225 @@ class Fighter_Player
     {
         this.moveArray.push(move); 
     }
+    /**
+     * Consumes the move (removes it from the array of move).
+     */
+    consumeMove()
+    {
+        this.moveArray.shift();
+    }
+    /**
+     * Consumes the next move (removes it from the array of move).
+     * This happens when the player get attacked with the Magenta Shock move.
+     */
+    getShocked()
+    {
+        this.moveArray.splice(1, 1);
+    }
+    /**
+     * Player gets the ability to dodge one attack.
+     */
+    dodgeUp()
+    {
+        this.dodge += 1;
+    }
+    /**
+     * Attack dodged !
+     */
+    dodge()
+    {
+        this.dodge -= 1;
+    }
+    /**
+     * Can the player dodge an attack ?
+     * @returns True if true... False otherwise.
+     */
+    canDodge()
+    {
+        if (this.dodge > 0) return true;
+        return false;
+    }
+    /**
+     * @returns The first move in the array.
+     */
+    get currentMove()
+    {
+        return this.moveArray[0];
+    }
+}
+
+/**
+ * Manages the interactions between players.
+ */
+class Fighter_Manager
+{
+    constructor()
+    {
+        this.turn = 0;
+    }
+    /**
+     * Process one turn of a fight between two players.
+     * @param {Fighter_Player} player1
+     * @param {Fighter_Player} player2
+     */
+    process_turn(player1, player2)
+    {
+        // Charity for the moveless people.
+        if (player1.currentMove == undefined) player1.addMove(MOVE_GUARD);
+        if (player2.currentMove == undefined) player2.addMove(MOVE_GUARD);
+
+
+        // Defending moves
+        // Cyan Dodge move 
+        if (player1.currentMove == MOVE_CYAN_DODGE) player1.dodgeUp();
+        if (player2.currentMove == MOVE_CYAN_DODGE) player2.dodgeUp();
+
+        // Attacking move
+        if (this.is_attacking(player1) && this.is_attacking(player2)) // Both players attacking (manage priority).
+        {
+            if (player1.speed > player2.speed)
+            {
+                this.process_attack(player1, player2);
+                // TODO : HEALTH CHECK HERE
+                this.process_attack(player2, player1);
+            }
+            else if (player1.speed < player2.speed)
+            {
+                this.process_attack(player2, player1);
+                // TODO : HEALTH CHECK HERE
+                this.process_attack(player1, player2);
+            }
+            else // Equal speed, they both attack at the same time.
+            {
+                this.process_attack(player2, player1);
+                this.process_attack(player2, player1);
+                // TODO : HEALTH CHECK HERE
+            }
+        }
+        else if (this.is_attacking(player1) || this.is_attacking_with_guard(player1,player2)) // Only the player 1 attacking.
+        {
+            if (player2.canDodge()) player2.dodge();
+            else
+            {
+                this.process_attack(player1, player2);
+                // TODO : HEALTH CHECK HERE
+            }
+        }
+        else if (this.is_attacking(player2) || this.is_attacking_with_guard(player2,player1)) // Only the player 2 attacking.
+        {
+            if (player1.canDodge()) player1.dodge();
+            else
+            {
+                this.process_attack(player2, player1);
+                // TODO : HEALTH CHECK HERE
+            }
+        }
+        // Moves end
+        player1.consumeMove();
+        player2.consumeMove();
+        // Turn end
+        this.turn += 1;
+    }
+    /**
+     * Process an attack move.
+     * @param {Fighter_Player} attacker Attacking player.
+     * @param {Fighter_Player} defender Defending player.
+     */
+    process_attack(attacker, defender)
+    {
+        let move = attacker.currentMove;
+        console.log(move);
+        switch (move) {
+            case MOVE_GUARD:
+                this.play_move_guard(attacker, defender);
+                break;
+            case MOVE_RED_STRIKE:
+                this.play_move_red_strike(attacker, defender);
+                break;
+            case MOVE_MAGENTA_SHOCK:
+                this.play_move_magenta_shock(attacker, defender);
+                break;
+            case MOVE_YELLOW_LIGHTNING:
+                this.play_move_yellow_lightning(attacker, defender);
+                break;
+            default: break;
+        }
+    }
+    /**
+     * Tells if the player is currently using an attacking move.
+     * @param {Fighter_Player} player 
+     * @returns True if attacking, False otherwise.
+     */
+    is_attacking(player)
+    {
+        switch (player.currentMove) {
+            case MOVE_RED_STRIKE:       return true;
+            case MOVE_MAGENTA_SHOCK:    return true;
+            case MOVE_YELLOW_LIGHTNING: return true;
+            default:break
+        }
+        return false;
+    }
+    /**
+     * Tells if the player is currently using the attacking part of the Guard move.
+     * @param {Fighter_Player} player1 Player to check the predicate.
+     * @param {Fighter_Player} player2
+     * @returns True if attacking with the Guard move, False otherwise.
+     */
+    is_attacking_with_guard(player1, player2)
+    {
+        if (player1.currentMove == MOVE_GUARD && player1.speed > player2.speed)
+            return true ;
+        return false;
+    }
+    apply_capping(ammount)
+    {
+        return Math.max(0 , ammount);
+    }
+    apply_move_def(player)
+    {
+        switch (player.currentMove)
+        {
+            case MOVE_GUARD:        return 0.5 * player.defense;
+            case MOVE_BLUE_SHIELD:  return 1.5 * player.defense;
+            case MOVE_GREEN_WARMUP: return 0.75* player.defense;
+            default:                return 0;
+        }   
+    }
+    /**
+     * Plays the attacking part of the Guard move.
+     * @param {Fighter_Player} player1 Attacker.
+     * @param {Fighter_Player} player2 Defender.
+     */
+    play_move_guard(player1, player2)
+    {
+        player2.health -= this.apply_capping( // Prevent gain of health if oppenent's defense is overwhelming.
+            (0.5 * player1.attack) - this.apply_move_def(player2) // Reduced attack Vs Possible protection
+        );
+    }
+    play_move_red_strike(player1, player2)
+    {
+        player2.health -= this.apply_capping(
+            (1.5 * player1.attack) - (this.apply_move_def(player2) - 5)
+        );
+    }
+    play_move_green_warmup(player)
+    {
+        player.speed = Math.min(100, player.speed + 25); // Cap the result to 100 max.
+    }
+    play_move_magenta_shock(player1, player2)
+    {
+        player2.health -= this.apply_capping(
+            (1.25 * player1.attack) - (this.apply_move_def(player2) - 5)
+        );
+        player2.getShocked();
+    }
+    play_move_yellow_lightning(player1, player2)
+    {
+        // Plays Red Strike move twice litteraly !
+        this.play_move_red_strike(player1, player2);
+        this.play_move_red_strike(player1, player2);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -206,9 +426,12 @@ class Fighter_Player
 //////////////////////////////////////////////////////////////////////
 
 var market = new Fighter_Market();
-var player = new Fighter_Player(100, 100, 100, 100);
+var player = new Fighter_Player(100, 95, 95, 75);
 var opponent = new Fighter_Player(100, 100, 100, 100);
-
+var manager = new Fighter_Manager;
+player.addMove(MOVE_RED_STRIKE);
+opponent.addMove(MOVE_GUARD);
+manager.process_turn(player,opponent);
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
