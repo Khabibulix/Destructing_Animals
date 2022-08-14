@@ -225,7 +225,7 @@ class Fighter_Player
     /**
      * Attack dodged !
      */
-    dodge()
+    dodgeAttack()
     {
         this.dodge -= 1;
     }
@@ -267,11 +267,13 @@ class Fighter_Manager
         if (player1.currentMove == undefined) player1.addMove(MOVE_GUARD);
         if (player2.currentMove == undefined) player2.addMove(MOVE_GUARD);
 
-
         // Defending moves
+        // Green Warm-up move
+        if (player1.currentMove == MOVE_GREEN_WARMUP) this.play_move_green_warmup(player1);
+        if (player2.currentMove == MOVE_GREEN_WARMUP) this.play_move_green_warmup(player2);
         // Cyan Dodge move 
-        if (player1.currentMove == MOVE_CYAN_DODGE) player1.dodgeUp();
-        if (player2.currentMove == MOVE_CYAN_DODGE) player2.dodgeUp();
+        if (player1.currentMove == MOVE_CYAN_DODGE) this.play_move_cyan_dodge(player1);
+        if (player2.currentMove == MOVE_CYAN_DODGE) this.play_move_cyan_dodge(player2);
 
         // Attacking move
         if (this.is_attacking(player1) && this.is_attacking(player2)) // Both players attacking (manage priority).
@@ -297,7 +299,7 @@ class Fighter_Manager
         }
         else if (this.is_attacking(player1) || this.is_attacking_with_guard(player1,player2)) // Only the player 1 attacking.
         {
-            if (player2.canDodge()) player2.dodge();
+            if (player2.canDodge()) player2.dodgeAttack();
             else
             {
                 this.process_attack(player1, player2);
@@ -306,7 +308,7 @@ class Fighter_Manager
         }
         else if (this.is_attacking(player2) || this.is_attacking_with_guard(player2,player1)) // Only the player 2 attacking.
         {
-            if (player1.canDodge()) player1.dodge();
+            if (player1.canDodge()) player1.dodgeAttack();
             else
             {
                 this.process_attack(player2, player1);
@@ -379,9 +381,9 @@ class Fighter_Manager
     {
         switch (player.currentMove)
         {
-            case MOVE_GUARD:        return 0.5 * player.defense;
-            case MOVE_BLUE_SHIELD:  return 1.5 * player.defense;
+            case MOVE_BLUE_SHIELD:  return 1.0 * player.defense;
             case MOVE_GREEN_WARMUP: return 0.75* player.defense;
+            case MOVE_GUARD:        return 0.5 * player.defense;
             default:                return 0;
         }   
     }
@@ -399,7 +401,7 @@ class Fighter_Manager
     play_move_red_strike(player1, player2)
     {
         player2.health -= this.apply_capping(
-            (1.5 * player1.attack) - (this.apply_move_def(player2) - 5)
+            (1.0 * player1.attack) - (this.apply_move_def(player2) - 5)
         );
     }
     play_move_green_warmup(player)
@@ -409,7 +411,7 @@ class Fighter_Manager
     play_move_magenta_shock(player1, player2)
     {
         player2.health -= this.apply_capping(
-            (1.25 * player1.attack) - (this.apply_move_def(player2) - 5)
+            (0.9 * player1.attack) - (this.apply_move_def(player2) - 5)
         );
         player2.getShocked();
     }
@@ -418,6 +420,11 @@ class Fighter_Manager
         // Plays Red Strike move twice litteraly !
         this.play_move_red_strike(player1, player2);
         this.play_move_red_strike(player1, player2);
+    }
+    play_move_cyan_dodge(player)
+    {
+        player.dodgeUp()
+        player.speed = Math.min(100, player.speed + 10); // Cap the result to 100 max.
     }
 }
 
@@ -430,7 +437,9 @@ var player = new Fighter_Player(100, 95, 95, 75);
 var opponent = new Fighter_Player(100, 100, 100, 100);
 var manager = new Fighter_Manager;
 player.addMove(MOVE_RED_STRIKE);
-opponent.addMove(MOVE_GUARD);
+opponent.addMove(MOVE_CYAN_DODGE);
+player.addMove(MOVE_RED_STRIKE);
+opponent.addMove(MOVE_RED_STRIKE);
 manager.process_turn(player,opponent);
 
 //////////////////////////////////////////////////////////////////////
