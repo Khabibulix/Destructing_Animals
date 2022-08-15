@@ -78,8 +78,6 @@ class Player {
         context.beginPath();
         context.strokeRect(this.x, this.y, this.width, this.height);
         context.stroke();
-        //context.fillStyle = 'white';
-        //context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
     }
     update(input, bricks){
@@ -93,18 +91,13 @@ class Player {
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
                     }
-                } else {
-                    console.log("right touch")
-                }
-                
-                
-                /**if (brick.y < brick.y + brick.height && this.height + this.y > brick.y){
-                    if (this.y < brick.y){
-                        console.log("bottom touch")
-                    } else {
-                        console.log("top touch")
+                } else if (this.x  > brick.x){
+                    // && this.height - this.y > brick.y
+                    if (this.y < brick.y - brick.height && this.height + this.y > brick.y){
+                        this.x = brick.x + brick.width + 10;
+                        this.speed = 0;
                     }
-                }*/
+                }
             }
 
         });
