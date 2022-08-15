@@ -69,22 +69,22 @@ class Mouse
     }
     listener(event)
     {
-        mouse.x = event.clientX;
-        mouse.y = event.clientY;
-        console.log(event);
+        if (event.target == CANVAS)
+        {
+            mouse.x = event.layerX;
+            mouse.y = event.layerY;
+        }
+        else
+        {
+            mouse.x = -1;
+            mouse.y = -1;
+        }
+        // console.log(event);
+        console.log(mouse);
     }
     isOnScreen()
     {
-        if (
-            mouse.x > 0
-            &&
-            mouse.x < CANVAS.width
-            &&
-            mouse.y > 0
-            &&
-            mouse.y < CANVAS.height
-            ) return true;
-        return false;
+        return !(mouse.x == -1 || mouse.y == -1);
     }
 }
 var mouse = new Mouse;
