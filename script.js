@@ -78,6 +78,8 @@ class Player {
         context.beginPath();
         context.strokeRect(this.x, this.y, this.width, this.height);
         context.stroke();
+        //context.fillStyle = 'white';
+        //context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
     }
     update(input, bricks){
@@ -92,6 +94,7 @@ class Player {
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
                     }
+<<<<<<< HEAD
                 //right side of the brick
                 } else if (this.x  > brick.x){
                     if (this.y < brick.y - brick.height && this.height + this.y > brick.y){
@@ -106,7 +109,20 @@ class Player {
                     if (brick.x > this.x + this.width > brick.x + brick.width && ){
                         console.log("test")
                     }
+=======
+                } else {
+                    console.log("right touch")
+>>>>>>> parent of 2fc2661 (Collision Add-on: Right side of block)
                 }
+                
+                
+                /**if (brick.y < brick.y + brick.height && this.height + this.y > brick.y){
+                    if (this.y < brick.y){
+                        console.log("bottom touch")
+                    } else {
+                        console.log("top touch")
+                    }
+                }*/
             }
         });
 
