@@ -83,23 +83,31 @@ class Player {
     update(input, bricks){
         this.weight =  1;
         bricks.forEach(brick => {
-                            
-            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {
-                
+            
+            //handling lateral side of the brick
+            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
+                //left side of the brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
                     }
+                //right side of the brick
                 } else if (this.x  > brick.x){
-                    // && this.height - this.y > brick.y
                     if (this.y < brick.y - brick.height && this.height + this.y > brick.y){
                         this.x = brick.x + brick.width + 10;
                         this.speed = 0;
                     }
+                } 
+
+            if (this.y < brick.y + brick.height && this.y + this.height > brick.y){
+                //bottom side of the brick
+                if (this.y < brick.y - brick.height){
+                    if (brick.x > this.x + this.width > brick.x + brick.width && ){
+                        console.log("test")
+                    }
                 }
             }
-
         });
 
         //controls
