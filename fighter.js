@@ -54,6 +54,44 @@ const MOVECOST_CYAN_DODGE3      =   [20, 20, 0 ]; // 40
 // NOTHING YET
 
 //////////////////////////////////////////////////////////////////////
+////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+document.addEventListener("keydown", none, false);
+function none(){};
+
+class Mouse
+{
+    constructor()
+    {
+        this.x = 0;
+        this.y = 0;
+    }
+    listener(event)
+    {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+        console.log(event);
+    }
+    isOnScreen()
+    {
+        if (
+            mouse.x > 0
+            &&
+            mouse.x < CANVAS.width
+            &&
+            mouse.y > 0
+            &&
+            mouse.y < CANVAS.height
+            ) return true;
+        return false;
+    }
+}
+var mouse = new Mouse;
+document.addEventListener("mousedown", mouse.listener, false);
+document.addEventListener("mousemove", mouse.listener, false);
+
+//////////////////////////////////////////////////////////////////////
 //////////////////////////  / CLASSES /  / ///////////////////////////
 //////////////////////////////////////////////////////////////////////
 
@@ -557,13 +595,6 @@ var gui_pannel4 = new GUI_Window
     CANVAS.width * 0.7 - (wMargin*3),
     CANVAS.height * 0.25 - (wMargin*2)
 );
-
-//////////////////////////////////////////////////////////////////////
-////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-document.addEventListener("keydown", none, false);
-function none(){};
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / TESTING TOOLS /  / ////////////////////////
