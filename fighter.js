@@ -90,7 +90,7 @@ class Mouse
 var mouse = new Mouse;
 
 //////////////////////////////////////////////////////////////////////
-//////////////////////////  / CLASSES /  / ///////////////////////////
+///////////////////////  /  GAME CLASSES /  / ////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 /**
@@ -464,7 +464,10 @@ class Fighter_Manager
     }
 }
 
-//
+//////////////////////////////////////////////////////////////////////
+///////////  / GRAPHICAL USER INTERFACE CLASSES /  / /////////////////
+//////////////////////////////////////////////////////////////////////
+
 class GUI_Window
 {
     constructor(x, y, width, height)
@@ -549,6 +552,32 @@ class GUI_Window
     }
 }
 
+class GUI_Button
+{
+    constructor(x, y, width, height, text)
+    {
+        this.x = x;
+        this.y = y
+        this.width = width;
+        this.height = height;
+        this.text = text;
+    }
+    draw()
+    {
+        CTX.fillStyle = "#666666";
+        CTX.fillRect
+        (
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
+        CTX.font = "16px Arial";
+        CTX.fillStyle = "black";
+        CTX.fillText(this.text, this.x, this.y + (this.height * 0.5));
+    }
+}
+
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / OBJECTS INIT /  / /////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -593,6 +622,8 @@ var gui_pannel4 = new GUI_Window
     CANVAS.width * 0.7 - (wMargin*3),
     CANVAS.height * 0.25 - (wMargin*2)
 );
+
+var button = new GUI_Button(25,25,50,50, "Test");
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / TESTING TOOLS /  / ////////////////////////
@@ -679,6 +710,8 @@ function fighterDraw() // Dirty way
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.41,150,10);
     CTX.fillStyle = "green";
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.44,150,10);
+    // BUTTON
+    button.draw();
 }
 
 function fighterGameloop()
