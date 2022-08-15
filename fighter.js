@@ -428,6 +428,91 @@ class Fighter_Manager
     }
 }
 
+//
+class GUI_Window
+{
+    constructor(x, y, width, height)
+    {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    draw_curvelinker(posx, posy)
+    {
+        CTX.quadraticCurveTo(posx, posy, posx, posy);
+    }
+    /**
+     * Draws a curve and links it to the next draw point (kind of moveTo).
+     * @param {Number} controlx Control point x.
+     * @param {Number} controly Control point y.
+     * @param {Number} destx Destination point x.
+     * @param {Number} desty Destination point y.
+     * @param {Number} nextx Coordonate x of the next draw point.
+     * @param {Number} nexty Coordonate y of the next draw point.
+     */
+    draw_curve(controlx, controly, destx, desty, nextx, nexty)
+    {
+        CTX.quadraticCurveTo(
+            controlx,
+            controly,
+            destx,
+            desty
+        );
+        this.draw_curvelinker(nextx,nexty);
+    }
+    draw()
+    {
+        const margin = ((this.width + this.height) / 2) * 0.1;
+        const origin_x = this.x;
+        const origin_y = this.y;
+        const full_x = this.x + this.width;
+        const full_y = this.y + this.height;
+        CTX.fillStyle = "black";
+        CTX.fillRect(
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
+        CTX.fillStyle = "grey";
+        CTX.beginPath();
+        CTX.moveTo(origin_x, origin_y + margin);
+        this.draw_curve(
+            origin_x,
+            origin_y,
+            origin_x + margin,
+            origin_y,
+            full_x - margin,
+            origin_y
+        );
+        this.draw_curve(
+            full_x,
+            origin_y,
+            full_x,
+            origin_y + margin,
+            full_x,
+            full_y - margin
+        );
+        CTX.quadraticCurveTo(
+            full_x,
+            full_y,
+            full_x - margin,
+            full_y,
+
+        );
+        this.draw_curvelinker(origin_x + margin, full_y);
+        CTX.quadraticCurveTo(
+            origin_x,
+            full_y,
+            origin_x,
+            full_y - margin,
+        );
+        this.draw_curvelinker(origin_x, origin_y + margin);
+        CTX.fill();
+    }
+}
+
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / OBJECTS INIT /  / /////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -436,11 +521,42 @@ var market = new Fighter_Market();
 var player = new Fighter_Player(100, 95, 95, 75);
 var opponent = new Fighter_Player(100, 100, 100, 100);
 var manager = new Fighter_Manager;
+//
 player.addMove(MOVE_RED_STRIKE);
 opponent.addMove(MOVE_CYAN_DODGE);
 player.addMove(MOVE_RED_STRIKE);
 opponent.addMove(MOVE_RED_STRIKE);
 manager.process_turn(player,opponent);
+//
+var wMargin = ((CANVAS.width + CANVAS.height)/2) * 0.01;
+var gui_pannel1 = new GUI_Window
+(
+    wMargin,
+    wMargin,
+    CANVAS.width * 0.3,
+    CANVAS.height - (wMargin*2)
+);
+var gui_pannel2 = new GUI_Window
+(
+    CANVAS.width * 0.3 + (wMargin*2),
+    wMargin,
+    CANVAS.width * 0.7 - (wMargin*3),
+    CANVAS.height * 0.25 - wMargin
+);
+var gui_pannel3 = new GUI_Window
+(
+    CANVAS.width * 0.3 + (wMargin*2),
+    CANVAS.height * 0.25 + wMargin,
+    CANVAS.width * 0.7 - (wMargin*3),
+    CANVAS.height * 0.5 - wMargin
+);
+var gui_pannel4 = new GUI_Window
+(
+    CANVAS.width * 0.3 + (wMargin*2),
+    CANVAS.height * 0.75 + wMargin,
+    CANVAS.width * 0.7 - (wMargin*3),
+    CANVAS.height * 0.25 - (wMargin*2)
+);
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
@@ -484,25 +600,17 @@ function fighterDraw() // Dirty way
     //// CLEAN
     CTX.clearRect(0,0, CANVAS.width, CANVAS.height);
     //// BACKGROUND
-    CTX.fillStyle = "white";
-    CTX.fillRect(0,0, CANVAS.width, CANVAS.height);
-    //// ELEMENT
     CTX.fillStyle = "black";
-    CTX.fillRect(CANVAS.width*0.33,0,1,CANVAS.height); // Left pannel
-    CTX.fillRect(
-        CANVAS.width*0.33,
-        CANVAS.height*0.2,
-        CANVAS.width,
-        1
-    ); // UP right pannel
-    CTX.fillRect(
-        CANVAS.width*0,
-        CANVAS.height*0.8,
-        CANVAS.width,
-        1
-    ); // Bottom right pannel
+    CTX.fillRect(0,0, CANVAS.width, CANVAS.height);
+    // GUI
+    gui_pannel1.draw();
+    gui_pannel2.draw();
+    gui_pannel3.draw();
+    gui_pannel4.draw();
+    //// ELEMENT
     //// MOVELIST
     CTX.font = "30px Arial";
+    CTX.fillStyle = "black";
     CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
     CTX.fillText("GEMS", CANVAS.width*0.1, CANVAS.height*0.9);
     CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.1);
