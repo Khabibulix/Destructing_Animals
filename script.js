@@ -82,20 +82,31 @@ class Player {
     update(input, bricks){
         this.weight =  1;
         bricks.forEach(brick => {
-                            
-            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {
-                
+
+            //handling lateral collisions
+            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
+                //left side of brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
                     }
-                } else if (this.x  > brick.x){
-                    // && this.height - this.y > brick.y
+                }
+
+                // right side of brick
+                if (this.x  > brick.x){
                     if (this.y < brick.y - brick.height && this.height + this.y > brick.y){
                         this.x = brick.x + brick.width + 10;
                         this.speed = 0;
                     }
+                }
+
+                //up side of brick
+                if (this.y > brick.y - brick.height - 10 && this.y + 5 < brick.y - brick.height){
+                    this.game_height = brick.y;
+                    this.y = brick.y - brick.height + 90;
+                    this.x = this.x + brick.width;
+                    this.speed = 0;
                 }
             }
 
