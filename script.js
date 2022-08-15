@@ -105,7 +105,6 @@ class Player {
                 if (this.y > brick.y - brick.height - 10 && this.y + 5 < brick.y - brick.height){
                     this.game_height = brick.y;
                     this.y = brick.y - brick.height + 90;
-                    this.x = this.x + brick.width;
                     this.speed = 0;
                 }
             }
