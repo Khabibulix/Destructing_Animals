@@ -64,6 +64,8 @@ class Mouse
 {
     constructor()
     {
+        document.addEventListener("mousedown", this.listener, false);
+        document.addEventListener("mousemove", this.listener, false);
         this.x = 0;
         this.y = 0;
     }
@@ -79,8 +81,6 @@ class Mouse
             mouse.x = -1;
             mouse.y = -1;
         }
-        // console.log(event);
-        console.log(mouse);
     }
     isOnScreen()
     {
@@ -88,8 +88,6 @@ class Mouse
     }
 }
 var mouse = new Mouse;
-document.addEventListener("mousedown", mouse.listener, false);
-document.addEventListener("mousemove", mouse.listener, false);
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////  / CLASSES /  / ///////////////////////////
