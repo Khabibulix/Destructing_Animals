@@ -71,7 +71,8 @@ class Player {
         this.speed = 0;
         this.vy = 0;
         this.weight = 1;
-
+        this.canJump = true;
+        
     }
     draw(context){
         context.beginPath();
@@ -81,6 +82,15 @@ class Player {
     }
     update(input, bricks){
         this.weight =  1;
+        this.canJump = false; // You won't jump mid-air ! But if you want to, set it true.
+        //check floor collision
+        if (!this.onGround()){
+            this.vy += this.weight;
+        } else {
+            this.vy = 0;
+            this.canJump = true;
+        }
+        //check brick collision
         bricks.forEach(brick => {
 
             //handling lateral collisions
@@ -102,36 +112,38 @@ class Player {
                 }
 
                 //up side of brick
-                if (this.y > brick.y - brick.height - 10 && this.y + 5 < brick.y - brick.height){
-                    this.game_height = brick.y;
-                    this.y = brick.y - brick.height + 90;
-                    this.speed = 0;
+                if (this.y + this.height < brick.y){
+                    console.log("Check"); // TO REMOVE
+                    if (this.vy >= 0) // Only affects the player if is falling or landed.
+                    {
+                        this.vy -= ((this.y + this.height) - brick.y) // Brick/Player remaining distance.
+                        this.vy /= 8; // Make sure the player won't fall too quickly and so bypass collision check.
+                        this.vy = Math.floor(this.vy); // Rounding the value to avoid anti-aliasing (optimization).
+                        if (this.vy == 0) this.canJump = true; // Make sure the player is fully landed before being able to jump.
+                    }
                 }
             }
-
+            
         });
-
+        
         //controls
         if(input.keys.indexOf("ArrowRight") > -1){
             this.speed += 1;
         } else if(input.keys.indexOf("ArrowLeft") > -1){
             this.speed -= 1;
-        } else if(input.keys.indexOf("ArrowUp") > -1 && this.onGround()){
+        } else if(input.keys.indexOf("ArrowUp") > -1 && this.canJump){
             this.vy-= 30;
+            this.canJump = false;
         } else {
             this.speed = 0;
         }            
-        //horizontal mov            
+        //apply mov vector            
+        console.log(this.vy); // TO REMOVE
         this.x += this.speed;
+        this.y += this.vy;
+        //canvas border capping
         if (this.x < 0) this.x = 0;
         else if (this.x > this.game_width - this.width) this.x = this.game_width - this.width
-        //vertical mov
-        this.y += this.vy;
-        if (!this.onGround()){
-            this.vy += this.weight;
-        } else {
-            this.vy = 0;
-        }
         if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height
 
     }
