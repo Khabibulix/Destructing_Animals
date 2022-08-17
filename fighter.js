@@ -64,30 +64,35 @@ class Mouse
 {
     constructor()
     {
-        document.addEventListener("mousedown", this.listener, false);
-        document.addEventListener("mousemove", this.listener, false);
         this.x = 0;
         this.y = 0;
+        this.mouseClick = 0;
+        document.addEventListener("mousedown", this.listener.bind(this), false);
+        document.addEventListener("mouseup", this.listener.bind(this), false);
+        document.addEventListener("mousemove", this.listener.bind(this), false);
+
     }
     listener(event)
     {
+        this.mouseClick = event.buttons;
         if (event.target == CANVAS)
         {
-            mouse.x = event.layerX;
-            mouse.y = event.layerY;
+            this.x = event.layerX;
+            this.y = event.layerY;
         }
         else
         {
-            mouse.x = -1;
-            mouse.y = -1;
+            this.x = -1;
+            this.y = -1;
         }
+        console.log(this.mouseClick);
     }
     isOnScreen()
     {
-        return !(mouse.x == -1 || mouse.y == -1);
+        return !(this.x == -1 || this.y == -1);
     }
 }
-var mouse = new Mouse;
+var mouse = new Mouse();
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  /  GAME CLASSES /  / ////////////////////////
@@ -561,10 +566,14 @@ class GUI_Button
         this.width = width;
         this.height = height;
         this.text = text;
+        this.isTouched = false;
+        this.isOnClick = false;
     }
     draw()
     {
-        CTX.fillStyle = "#666666";
+        if (this.isOnClick)         CTX.fillStyle = "#eeeeee";
+        else if (this.isTouched)    CTX.fillStyle = "#aaaaaa";
+        else                        CTX.fillStyle = "#666666";
         CTX.fillRect
         (
             this.x,
@@ -575,6 +584,27 @@ class GUI_Button
         CTX.font = "16px Arial";
         CTX.fillStyle = "black";
         CTX.fillText(this.text, this.x, this.y + (this.height * 0.5));
+    }
+    checkCollision(mouse)
+    {
+        if
+        (
+                mouse.x > this.x
+            &&  mouse.x < this.x + this.width
+            &&  mouse.y > this.y
+            &&  mouse.y < this.y + this.height
+        ) return true;
+        return false;
+    }
+    process(mouse)
+    {
+        this.isTouched = false;
+        this.isOnClick = false;
+        if (this.checkCollision(mouse))
+        {
+            this.isTouched = true;
+            if (mouse.mouseClick == 1) this.isOnClick = true;
+        }
     }
 }
 
@@ -623,7 +653,7 @@ var gui_pannel4 = new GUI_Window
     CANVAS.height * 0.25 - (wMargin*2)
 );
 
-var button = new GUI_Button(25,25,50,50, "Test");
+var button = new GUI_Button(CANVAS.width*0.25,CANVAS.height*0.25,50,50, "Button");
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / TESTING TOOLS /  / ////////////////////////
@@ -652,6 +682,7 @@ function printGameState()
 
 function fighterProcess()
 {
+    button.process(mouse);
 
 }
 
