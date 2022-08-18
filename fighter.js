@@ -568,6 +568,7 @@ class GUI_Button
         this.text = text;
         this.isTouched = false;
         this.isOnClick = false;
+        this.wasOnClick = false;
     }
     draw()
     {
@@ -603,7 +604,12 @@ class GUI_Button
         if (this.checkCollision(mouse))
         {
             this.isTouched = true;
-            if (mouse.mouseClick == 1) this.isOnClick = true;
+            if (mouse.mouseClick == 1)
+            {
+                if (!this.wasOnClick) this.isOnClick = true;
+                this.wasOnClick = true;
+            }
+            else  this.wasOnClick =  false;
         }
     }
 }
