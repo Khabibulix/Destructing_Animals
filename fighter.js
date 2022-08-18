@@ -27,10 +27,18 @@ const MOVE_CYAN_DODGE       =   6;
     /* Free */
 const MOVECOST_GUARD            =   [0 , 0 , 0 ];
     /* Pure */
-const MOVECOST_RED_STRIKE       =   [10, 0 , 0 ];
-const MOVECOST_BLUE_SHIELD      =   [0 , 10, 0 ];
-const MOVECOST_GREEN_WARMUP     =   [0 , 0 , 10];
-    /* Hybrid with alternative costs */
+const MOVECOST_RED_STRIKE_R     =  [10, 0 , 0 ]; // Classic
+const MOVECOST_RED_STRIKE_B     =  [0 , 40, 0 ];
+const MOVECOST_RED_STRIKE_G     =  [0 , 0 , 20];
+/**/
+const MOVECOST_BLUE_SHIELD_R    =   [20, 0 , 0 ];
+const MOVECOST_BLUE_SHIELD_B    =   [0 , 10, 0 ]; // Classic
+const MOVECOST_BLUE_SHIELD_G    =   [0 , 0 , 40];
+/**/
+const MOVECOST_GREEN_WARMUP_R   =   [40, 0 , 0 ];
+const MOVECOST_GREEN_WARMUP_B   =   [0 , 20, 0 ];
+const MOVECOST_GREEN_WARMUP_G   =   [0 , 0 , 10]; // Classic
+    /* Hybrid */
 const MOVECOST_MAGENTA_SHOCK0   =   [10, 10, 0 ]; // Classic
 const MOVECOST_MAGENTA_SHOCK1   =   [0 , 10, 20]; // Split 30
 const MOVECOST_MAGENTA_SHOCK2   =   [30 ,0 , 0 ]; // 30
@@ -85,7 +93,6 @@ class Mouse
             this.x = -1;
             this.y = -1;
         }
-        console.log(this.mouseClick);
     }
     isOnScreen()
     {
@@ -108,89 +115,68 @@ class Fighter_Market
 
     }
     /**
-     * Checks if the chosen pure move can be bought by a player.
-     * @param {Fighter_Player} player Player.
-     * @param {Number[]} movecost Array of 3 Number representing the cost of the move.
-     * @param {Number} r Red "conversion tax" (Default = 0).
-     * @param {Number} b Blue "conversion tax" (Default = 0).
-     * @param {Number} g Green "conversion tax" (Default = 0).
-     * @returns True if the player can buy it, False otherwise.
-     */
-    checkPureMoveCost(player, movecost, r=0, b=0, g=0)
-    {
-        if
-        (
-            player.money[0] >= movecost[0] + r
-            ||
-            player.money[1] >= movecost[1] + b
-            ||
-            player.money[2] >= movecost[2] + g
-        ) return true;
-        return false;
-    }
-    /**
-     * Checks if the chosen hybrid move can be bought by a player.
-     * @param {Fighter_Player} player Player.
+     * Checks if the chosen move can be bought by a player.
+     * @param {Number[]} money Array of 3 Number representing the currency available.
      * @param {Number[]} movecost Array of 3 Number representing the cost of the move.
      * @returns True if the player can buy it, False otherwise.
      */
-    checkHybridMoveCost(player, movecost)
+    checkMoveCost(money, movecost)
     {
         if
         (
-            player.money[0] >= movecost[0]
+            money[0] >= movecost[0]
             &&
-            player.money[1] >= movecost[1]
+            money[1] >= movecost[1]
             &&
-            player.money[2] >= movecost[2]
+            money[2] >= movecost[2]
         ) return true;
         return false;
     }
     /**
      * Checks if the chosen move can be bought by a player.
-     * @param {Fighter_Player} player Player.
+     * @param {Number[]} money Array of 3 Number representing the currency available.
      * @param {Number} move Move ID.
      * @returns True if the player can buy it, False otherwise. 
      */
-    canIBuyThat(player, move) //
+    canIBuyThat(money, move) //
     {
         switch (move) {
             case MOVE_GUARD: return true;
-            case MOVE_RED_STRIKE: return this.checkPureMoveCost(player, MOVECOST_RED_STRIKE, 0, 40,20);
-            case MOVE_BLUE_SHIELD: return this.checkPureMoveCost(player, MOVECOST_BLUE_SHIELD, 20, 0, 40);
-            case MOVE_GREEN_WARMUP: return this.checkPureMoveCost(player, MOVECOST_GREEN_WARMUP, 40, 20, 0);
+            case MOVE_RED_STRIKE: return this.checkPureMoveCost(money, MOVECOST_RED_STRIKE, 0, 40,20);
+            case MOVE_BLUE_SHIELD: return this.checkPureMoveCost(money, MOVECOST_BLUE_SHIELD, 20, 0, 40);
+            case MOVE_GREEN_WARMUP: return this.checkPureMoveCost(money, MOVECOST_GREEN_WARMUP, 40, 20, 0);
             case MOVE_MAGENTA_SHOCK:
             if
             (
-                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK0)
+                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK0)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK1)
+                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK1)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK2)
+                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK2)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_MAGENTA_SHOCK3)
+                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK3)
             ) return true; break;
             case MOVE_YELLOW_LIGHTNING:
             if
             (
-                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING0)
+                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING0)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING1)
+                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING1)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING2)
+                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING2)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_YELLOW_LIGHTNING3)
+                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING3)
             ) return true; break;
             case MOVE_CYAN_DODGE:
             if
             (
-                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE0)
+                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE0)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE1)
+                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE1)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE2)
+                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE2)
                 ||
-                this.checkHybridMoveCost(player, MOVECOST_CYAN_DODGE3)
+                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE3)
             ) return true; break;
             default: break;
         }
@@ -200,12 +186,14 @@ class Fighter_Market
      * Allows a player to buy a move if it has the ressources.
      * @param {Fighter_Player} player Player.
      * @param {Number} move Move ID.
+     * @param {Number[]} price Array of 3 Number representing the price of the move.
      * @returns Nothing.
      */
-    buy(player, move)
+    buy(player, move, price)
     {
-        if(this.canIBuyThat(player, move)){ // Just in case, but it is supposed to be already checked before the call.
-            // TODO : get the cost and make the player pay it.
+        if(this.checkMoveCost(player.money, price)){
+            for (let i = 0; i < 3 ; i++) player.money[i] -= price[i];
+            player.addSpending(price);
             player.addMove(move);
         }
     }
@@ -231,7 +219,16 @@ class Fighter_Player
         this.defense = countBlue;
         this.speed = countGreen;
         this.moveArray = []; // Array of move.
+        this.spendingArray = [] // Array reprensenting the money spended for each move (used for attribute consumption).
         this.dodge = 0; // Used by Cyan Dodge move.
+    }
+    /**
+     * Adds a spending to the associated array.
+     * @param {Number[]} price Array of 3 Number representing the price of the bought move.
+     */
+    addSpending(price)
+    {
+        this.spendingArray.push(price);
     }
     /**
      * Adds a move to the array of move.
@@ -559,7 +556,7 @@ class GUI_Window
 
 class GUI_Button
 {
-    constructor(x, y, width, height, text)
+    constructor(x, y, width, height, text, func)
     {
         this.x = x;
         this.y = y
@@ -569,6 +566,7 @@ class GUI_Button
         this.isTouched = false;
         this.isOnClick = false;
         this.wasOnClick = false;
+        this.func = func;
     }
     draw()
     {
@@ -597,6 +595,10 @@ class GUI_Button
         ) return true;
         return false;
     }
+    triggerFunc()
+    {
+        this.func();
+    }
     process(mouse)
     {
         this.isTouched = false;
@@ -611,6 +613,7 @@ class GUI_Button
             }
             else  this.wasOnClick =  false;
         }
+        if (this.isOnClick) this.triggerFunc();
     }
 }
 
@@ -659,7 +662,14 @@ var gui_pannel4 = new GUI_Window
     CANVAS.height * 0.25 - (wMargin*2)
 );
 
-var button = new GUI_Button(CANVAS.width*0.25,CANVAS.height*0.25,50,50, "Button");
+var button = new GUI_Button(
+    CANVAS.width*0.2,
+    CANVAS.height*0.15,
+    100,
+    50,
+    "RED STRIKE",
+    f => {market.buy(player, MOVE_RED_STRIKE, MOVECOST_RED_STRIKE_R)}
+    );
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / TESTING TOOLS /  / ////////////////////////
@@ -709,7 +719,7 @@ function fighterDraw() // Dirty way
     CTX.font = "30px Arial";
     CTX.fillStyle = "black";
     CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
-    CTX.fillText("GEMS", CANVAS.width*0.1, CANVAS.height*0.9);
+    CTX.fillText("GEMS = " + player.money, CANVAS.width*0.05, CANVAS.height*0.9);
     CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.1);
     CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.9);
     CTX.fillStyle = "red";
