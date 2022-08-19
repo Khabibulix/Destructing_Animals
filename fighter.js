@@ -650,12 +650,6 @@ var player = new Fighter_Player(100, 95, 95, 75);
 var opponent = new Fighter_Player(100, 100, 100, 100);
 var manager = new Fighter_Manager;
 //
-player.addMove(MOVE_RED_STRIKE);
-opponent.addMove(MOVE_CYAN_DODGE);
-player.addMove(MOVE_RED_STRIKE);
-opponent.addMove(MOVE_RED_STRIKE);
-manager.process_turn(player,opponent);
-//
 var wMargin = ((CANVAS.width + CANVAS.height)/2) * 0.01;
 var gui_pannel1 = new GUI_Window
 (
@@ -686,13 +680,80 @@ var gui_pannel4 = new GUI_Window
     CANVAS.height * 0.25 - (wMargin*2)
 );
 
-var button = new GUI_Button(
+// RED STRIKE BUTTONS
+var buttonRS1 = new GUI_Button(
     CANVAS.width*0.2,
-    CANVAS.height*0.15,
-    100,
+    CANVAS.height*0.1,
     50,
-    "RED STRIKE",
+    50,
+    "10 R",
     f => {market.buy(player, MOVE_RED_STRIKE, MOVECOST_RED_STRIKE_R)}
+    );
+var buttonRS2 = new GUI_Button(
+    CANVAS.width*0.2 + 50,
+    CANVAS.height*0.1,
+    50,
+    50,
+    "40 B",
+    f => {market.buy(player, MOVE_RED_STRIKE, MOVECOST_RED_STRIKE_B)}
+    );
+var buttonRS3 = new GUI_Button(
+    CANVAS.width*0.2 + 100,
+    CANVAS.height*0.1,
+    50,
+    50,
+    "20 G",
+    f => {market.buy(player, MOVE_RED_STRIKE, MOVECOST_RED_STRIKE_G)}
+    );
+// BLUE SHILED BUTTONS
+var buttonBS1 = new GUI_Button(
+    CANVAS.width*0.2,
+    CANVAS.height*0.1 + 50,
+    50,
+    50,
+    "20 R",
+    f => {market.buy(player, MOVE_BLUE_SHIELD, MOVECOST_BLUE_SHIELD_R)}
+    );
+var buttonBS2 = new GUI_Button(
+    CANVAS.width*0.2 + 50,
+    CANVAS.height*0.1 + 50,
+    50,
+    50,
+    "10 B",
+    f => {market.buy(player, MOVE_BLUE_SHIELD, MOVECOST_BLUE_SHIELD_B)}
+    );
+var buttonBS3 = new GUI_Button(
+    CANVAS.width*0.2 + 100,
+    CANVAS.height*0.1 + 50,
+    50,
+    50,
+    "40 G",
+    f => {market.buy(player, MOVE_BLUE_SHIELD, MOVECOST_BLUE_SHIELD_G)}
+    );
+// GREEN WARM-UP BUTTONS
+var buttonGW1 = new GUI_Button(
+    CANVAS.width*0.2,
+    CANVAS.height*0.1 + 100,
+    50,
+    50,
+    "40 R",
+    f => {market.buy(player, MOVE_GREEN_WARMUP, MOVECOST_GREEN_WARMUP_R)}
+    );
+var buttonGW2 = new GUI_Button(
+    CANVAS.width*0.2 + 50,
+    CANVAS.height*0.1 + 100,
+    50,
+    50,
+    "20 B",
+    f => {market.buy(player, MOVE_GREEN_WARMUP, MOVECOST_GREEN_WARMUP_B)}
+    );
+var buttonGW3 = new GUI_Button(
+    CANVAS.width*0.2 + 100,
+    CANVAS.height*0.1 + 100,
+    50,
+    50,
+    "10 G",
+    f => {market.buy(player, MOVE_GREEN_WARMUP, MOVECOST_GREEN_WARMUP_G)}
     );
 
 //////////////////////////////////////////////////////////////////////
@@ -722,8 +783,15 @@ function printGameState()
 
 function fighterProcess()
 {
-    button.process(mouse);
-
+    buttonRS1.process(mouse);
+    buttonRS2.process(mouse);
+    buttonRS3.process(mouse);
+    buttonBS1.process(mouse);
+    buttonBS2.process(mouse);
+    buttonBS3.process(mouse);
+    buttonGW1.process(mouse);
+    buttonGW2.process(mouse);
+    buttonGW3.process(mouse);
 }
 
 function fighterDraw() // Dirty way
@@ -743,7 +811,8 @@ function fighterDraw() // Dirty way
     CTX.font = "30px Arial";
     CTX.fillStyle = "black";
     CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
-    CTX.fillText("GEMS = " + player.money, CANVAS.width*0.05, CANVAS.height*0.9);
+    CTX.fillText("GEMS = " + player.money, CANVAS.width*0.025, CANVAS.height*0.9);
+    CTX.fillText("BOUGHT = " + player.moveArray, CANVAS.width*0.025, CANVAS.height*0.95);
     CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.1);
     CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.9);
     CTX.fillStyle = "red";
@@ -782,7 +851,15 @@ function fighterDraw() // Dirty way
     CTX.fillStyle = "green";
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.44,150,10);
     // BUTTON
-    button.draw();
+    buttonRS1.draw();
+    buttonRS2.draw();
+    buttonRS3.draw();
+    buttonBS1.draw();
+    buttonBS2.draw();
+    buttonBS3.draw();
+    buttonGW1.draw();
+    buttonGW2.draw();
+    buttonGW3.draw();
 }
 
 function fighterGameloop()
