@@ -135,48 +135,72 @@ class Fighter_Market
     /**
      * Checks if the chosen move can be bought by a player.
      * @param {Number[]} money Array of 3 Number representing the currency available.
-     * @param {Number} move Move ID.
+     * @param {Number[]} movecost Array of 3 Number representing the cost of the move.
      * @returns True if the player can buy it, False otherwise. 
      */
-    canIBuyThat(money, move) //
+    canIBuyThat(money, move)
     {
         switch (move) {
             case MOVE_GUARD: return true;
-            case MOVE_RED_STRIKE: return this.checkPureMoveCost(money, MOVECOST_RED_STRIKE, 0, 40,20);
-            case MOVE_BLUE_SHIELD: return this.checkPureMoveCost(money, MOVECOST_BLUE_SHIELD, 20, 0, 40);
-            case MOVE_GREEN_WARMUP: return this.checkPureMoveCost(money, MOVECOST_GREEN_WARMUP, 40, 20, 0);
+            case MOVE_RED_STRIKE:
+            if
+            (
+                this.checkMoveCost(money, MOVECOST_RED_STRIKE_R)
+                ||
+                this.checkMoveCost(money, MOVECOST_RED_STRIKE_B)
+                ||
+                this.checkMoveCost(money, MOVECOST_RED_STRIKE_G)
+            ) return true; break;
+            case MOVE_BLUE_SHIELD:
+            if
+            (
+                this.checkMoveCost(money, MOVECOST_BLUE_SHIELD_R)
+                ||
+                this.checkMoveCost(money, MOVECOST_BLUE_SHIELD_B)
+                ||
+                this.checkMoveCost(money, MOVECOST_BLUE_SHIELD_G)
+            ) return true; break;
+            case MOVE_GREEN_WARMUP:
+            if
+            (
+                this.checkMoveCost(money, MOVECOST_GREEN_WARMUP_R)
+                ||
+                this.checkMoveCost(money, MOVECOST_GREEN_WARMUP_B)
+                ||
+                this.checkMoveCost(money, MOVECOST_GREEN_WARMUP_G)
+            ) return true; break;
             case MOVE_MAGENTA_SHOCK:
             if
             (
-                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK0)
+                this.checkMoveCost(money, MOVECOST_MAGENTA_SHOCK0)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK1)
+                this.checkMoveCost(money, MOVECOST_MAGENTA_SHOCK1)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK2)
+                this.checkMoveCost(money, MOVECOST_MAGENTA_SHOCK2)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_MAGENTA_SHOCK3)
+                this.checkMoveCost(money, MOVECOST_MAGENTA_SHOCK3)
             ) return true; break;
             case MOVE_YELLOW_LIGHTNING:
             if
             (
-                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING0)
+                this.checkMoveCost(money, MOVECOST_YELLOW_LIGHTNING0)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING1)
+                this.checkMoveCost(money, MOVECOST_YELLOW_LIGHTNING1)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING2)
+                this.checkMoveCost(money, MOVECOST_YELLOW_LIGHTNING2)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_YELLOW_LIGHTNING3)
+                this.checkMoveCost(money, MOVECOST_YELLOW_LIGHTNING3)
             ) return true; break;
             case MOVE_CYAN_DODGE:
             if
             (
-                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE0)
+                this.checkMoveCost(money, MOVECOST_CYAN_DODGE0)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE1)
+                this.checkMoveCost(money, MOVECOST_CYAN_DODGE1)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE2)
+                this.checkMoveCost(money, MOVECOST_CYAN_DODGE2)
                 ||
-                this.checkHybridMoveCost(money, MOVECOST_CYAN_DODGE3)
+                this.checkMoveCost(money, MOVECOST_CYAN_DODGE3)
             ) return true; break;
             default: break;
         }
