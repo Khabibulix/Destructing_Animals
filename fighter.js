@@ -646,8 +646,8 @@ class GUI_Button
 //////////////////////////////////////////////////////////////////////
 
 var market = new Fighter_Market();
-var player = new Fighter_Player(100, 95, 95, 75);
-var opponent = new Fighter_Player(100, 100, 100, 100);
+var player = new Fighter_Player(100, 50, 50, 50);
+var opponent = new Fighter_Player(100, 75, 75, 75);
 var manager = new Fighter_Manager;
 //
 var wMargin = ((CANVAS.width + CANVAS.height)/2) * 0.01;
@@ -755,6 +755,15 @@ var buttonGW3 = new GUI_Button(
     "10 G",
     f => {market.buy(player, MOVE_GREEN_WARMUP, MOVECOST_GREEN_WARMUP_G)}
     );
+// Start fight
+var buttonFight = new GUI_Button(
+    CANVAS.width*0.2 + 100,
+    CANVAS.height*0.7,
+    50,
+    50,
+    "DONE",
+    f => {manager.process_turn(player, opponent)}
+    );
 
 //////////////////////////////////////////////////////////////////////
 ///////////////////////  / TESTING TOOLS /  / ////////////////////////
@@ -792,6 +801,8 @@ function fighterProcess()
     buttonGW1.process(mouse);
     buttonGW2.process(mouse);
     buttonGW3.process(mouse);
+    buttonFight.process(mouse);
+
 }
 
 function fighterDraw() // Dirty way
@@ -813,8 +824,10 @@ function fighterDraw() // Dirty way
     CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
     CTX.fillText("GEMS = " + player.money, CANVAS.width*0.025, CANVAS.height*0.9);
     CTX.fillText("BOUGHT = " + player.moveArray, CANVAS.width*0.025, CANVAS.height*0.95);
-    CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.1);
-    CTX.fillText("MOVELIST", CANVAS.width*0.6, CANVAS.height*0.9);
+    CTX.fillText("OPPONENT MOVELIST", CANVAS.width*0.55, CANVAS.height*0.1);
+    CTX.fillText(opponent.moveArray, CANVAS.width*0.55, CANVAS.height*0.15);
+    CTX.fillText("YOUR MOVELIST", CANVAS.width*0.55, CANVAS.height*0.85);
+    CTX.fillText(player.moveArray, CANVAS.width*0.55, CANVAS.height*0.9);
     CTX.fillStyle = "red";
     CTX.fillText("Red Strike", CANVAS.width*0.05, 100);
     CTX.fillStyle = "blue";
@@ -834,22 +847,30 @@ function fighterDraw() // Dirty way
     CTX.fillStyle = "black";
     CTX.fillRect(CANVAS.width*0.5,CANVAS.height*0.5,100,100);
     CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.35,150,10);
+    CTX.fillText(player.health, CANVAS.width*0.48 + 150, CANVAS.height*0.35);
     CTX.fillStyle = "red";
     CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.38,150,10);
+    CTX.fillText(player.attack, CANVAS.width*0.48 + 150, CANVAS.height*0.38);
     CTX.fillStyle = "blue";
     CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.41,150,10);
+    CTX.fillText(player.defense, CANVAS.width*0.48 + 150, CANVAS.height*0.41);
     CTX.fillStyle = "green";
     CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.44,150,10);
+    CTX.fillText(player.speed, CANVAS.width*0.48 + 150, CANVAS.height*0.44);
     // P2
     CTX.fillStyle = "black";
     CTX.fillRect(CANVAS.width*0.7,CANVAS.height*0.5,100,100);
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.35,150,10);
+    CTX.fillText(opponent.health, CANVAS.width*0.68 + 150, CANVAS.height*0.35);
     CTX.fillStyle = "red";
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.38,150,10);
+    CTX.fillText(opponent.attack, CANVAS.width*0.68 + 150, CANVAS.height*0.38);
     CTX.fillStyle = "blue";
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.41,150,10);
+    CTX.fillText(opponent.defense, CANVAS.width*0.68 + 150, CANVAS.height*0.41);
     CTX.fillStyle = "green";
     CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.44,150,10);
+    CTX.fillText(opponent.speed, CANVAS.width*0.68 + 150, CANVAS.height*0.44);
     // BUTTON
     buttonRS1.draw();
     buttonRS2.draw();
@@ -860,6 +881,7 @@ function fighterDraw() // Dirty way
     buttonGW1.draw();
     buttonGW2.draw();
     buttonGW3.draw();
+    buttonFight.draw();
 }
 
 function fighterGameloop()
