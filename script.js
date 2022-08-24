@@ -7,10 +7,10 @@ let gameOver = false;
 
 /**
  * This class is handling all the keys pressed in the web browser via two events listeners.
- * @param: {list] keys
- * @event: If a key is down, we stock it in keys only if key doesn't exist in keys
- * @event: If the same key is up, we remove it from keys
- * @author: Khabibulix
+ * @param {list} keys
+ * @event If a key is down, we stock it in keys only if key doesn't exist in keys
+ * @event If the same key is up, we remove it from keys
+ * @author Khabibulix
  */
 class InputHandler {
     constructor(){
@@ -37,16 +37,16 @@ class InputHandler {
 
 /**
  * This class is creating bricks objects.
- * @author: Khabibulix
- * @param: {Int} width represents the current width of the brick object
- * @param: {Int} height represents the current height of the brick object
- * @param: {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
- * @param: {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
- * @param: {Int} x represents the current position of the brick object. DEFAULT --> Is equal to default game_width, because we want it outside of the screen to make the scrolling effective
- * @param: {Int} y represents the current position of the brick object DEFAULT --> At 4 bricks of the ground, the ground is 'this.game_height - this.height'
- * @param: {File} image represents the current sprite of the brick object
- * @param: {Int} speed represents the speed of the brick object
- * @param: {Boolean} marked_for_deletion is used to check is the brick is outside the playground, if the answer is yes, we mark it for deletion in update(). DEFAULT --> false 
+ * @author Khabibulix
+ * @param {Int} width represents the current width of the brick object
+ * @param {Int} height represents the current height of the brick object
+ * @param {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
+ * @param {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
+ * @param {Int} x represents the current position of the brick object. DEFAULT --> Is equal to default game_width, because we want it outside of the screen to make the scrolling effective
+ * @param {Int} y represents the current position of the brick object DEFAULT --> At 4 bricks of the ground, the ground is 'this.game_height - this.height'
+ * @param {File} image represents the current sprite of the brick object
+ * @param {Int} speed represents the speed of the brick object
+ * @param {Boolean} marked_for_deletion is used to check is the brick is outside the playground, if the answer is yes, we mark it for deletion in update(). DEFAULT --> false 
  *  
  */
 class Brick {
@@ -86,18 +86,18 @@ class Brick {
 
 /**
  * This class is creating the player object once.
- * @author: Khabibulix
- * @param: {Int} width represents the current width of the player object. DEFAULT --> 200
- * @param: {Int} height represents the current height of the player object. DEFAULT --> 252
- * @param: {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
- * @param: {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
- * @param: {Int} x represents the current position of the player object. DEFAULT --> 500, because we want it far from right side where bricks are coming
- * @param: {Int} y represents the current position of the player object DEFAULT --> On ground using his height in 'this.game_height - this.height'
- * @param: {File} image represents the current sprite of the player object
- * @param: {Int} speed represents the speed of the player object. DEFAULT --> 0 because it shall not move without inputs
- * @param: {Int} vy is used to jump, it represents his velocity on vertical axis, it shall not jump if the 'Up Arrow Key' isn't pressed. DEFAULT --> 0
- * @param: {Int} weight is used to fall, we oppose it to the velocity to make the player come back on ground and simulate the gravity. DEFAULT --> 1
- * @param: {Boolean} canJump determines if the player is able to jump, it is useful because we don't allow double jumps, if the player is in mid-air for example.
+ * @author Khabibulix
+ * @param {Int} width represents the current width of the player object. DEFAULT --> 200
+ * @param {Int} height represents the current height of the player object. DEFAULT --> 252
+ * @param {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
+ * @param {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
+ * @param {Int} x represents the current position of the player object. DEFAULT --> 500, because we want it far from right side where bricks are coming
+ * @param {Int} y represents the current position of the player object DEFAULT --> On ground using his height in 'this.game_height - this.height'
+ * @param {File} image represents the current sprite of the player object
+ * @param {Int} speed represents the speed of the player object. DEFAULT --> 0 because it shall not move without inputs
+ * @param {Int} vy is used to jump, it represents his velocity on vertical axis, it shall not jump if the 'Up Arrow Key' isn't pressed. DEFAULT --> 0
+ * @param {Int} weight is used to fall, we oppose it to the velocity to make the player come back on ground and simulate the gravity. DEFAULT --> 1
+ * @param {Boolean} canJump determines if the player is able to jump, it is useful because we don't allow double jumps, if the player is in mid-air for example.
  *  
  */
 class Player {
@@ -129,9 +129,9 @@ class Player {
     }
 
     /**
-     * Update the player position, core of the collision detection too, /!\do not change values here only if absolutely necessary
-     * @param {*} input 
-     * @param {*} bricks 
+     * Update the player position, core of the collision detection too, /!\do not change values here only if absolutely necessary/!\
+     * @param {InputHandler} input Represents an object created using InputHandler class, we want the Player class to know which keys are pressed 
+     * @param {List} bricks Represents all the bricks created using the function handleBricks(), we want the Player class to know where the bricks are, for the collision detection
      */
     update(input, bricks){
         this.weight =  1;
@@ -143,12 +143,9 @@ class Player {
             this.vy = 0;
             this.canJump = true;
         }
-        //check brick collision
-        bricks.forEach(brick => {
-
-            //handling lateral collisions
+        bricks.forEach(brick => {            
             if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
-                //left side of brick
+                /*//left side of brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
@@ -162,7 +159,7 @@ class Player {
                         this.x = brick.x + brick.width + 10;
                         this.speed = 0;
                     }
-                }
+                }*/
 
                 //up side of brick
                 if (this.y + this.height < brick.y){
@@ -173,6 +170,9 @@ class Player {
                         this.vy = Math.floor(this.vy); // Rounding the value to avoid anti-aliasing (optimization).
                         if (this.vy == 0) this.canJump = true; // Make sure the player is fully landed before being able to jump.
                     }
+                } else if (this.y + this.height * 2 > brick.y && this.vy < 0) { 
+                    //here we are checking if the player is jumping and if he is below a brick, if it's the case, we are making the player falling immediatly
+                    this.vy = 0;
                 }
             }
             
@@ -190,7 +190,6 @@ class Player {
             this.speed = 0;
         }            
         //apply mov vector            
-        console.log(this.vy); // TO REMOVE
         this.x += this.speed;
         this.y += this.vy;
         //canvas border capping
@@ -199,12 +198,27 @@ class Player {
         if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height
 
     }
-
+    /**
+     * Check if the player is currently on ground and if it can jump
+     * @returns {Boolean} 
+     */
     onGround(){
         return this.y >= this.game_height - this.height;
     }
 }
 
+/**
+ * Handles the background, his scrolling, the picture displayed
+ * @author Khabibulix
+ * @param {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
+ * @param {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
+ * @param {File} image represents the current sprite of the background object
+ * @param {Int} x represents the current position of the background object. DEFAULT --> 0, because we want it to cover all canvas
+ * @param {Int} y represents the current position of the background object. DEFAULT --> 0, because we want it to cover all canvas
+ * @param {Int} width represents the current width of the background object. DEFAULT --> 1600
+ * @param {Int} height represents the current height of the background object. DEFAULT --> 848
+ * @param {Int} speed represents the speed of the background object. DEFAULT --> 20 for a smooth scrolling
+ * */
 class Background {
     constructor(game_width, game_height){
         this.game_width = game_width;
