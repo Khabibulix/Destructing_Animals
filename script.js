@@ -92,10 +92,12 @@ class Brick {
  * @param: {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
  * @param: {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
  * @param: {Int} x represents the current position of the player object. DEFAULT --> 500, because we want it far from right side where bricks are coming
- * @param: {Int} y represents the current position of the brick object DEFAULT --> On ground
- * @param: {File} image represents the current sprite of the brick object
- * @param: {Int} speed represents the speed of the brick object
- * @param: {Boolean} marked_for_deletion is used to check is the brick is outside the playground, if the answer is yes, we mark it for deletion in update(). DEFAULT --> false 
+ * @param: {Int} y represents the current position of the player object DEFAULT --> On ground using his height in 'this.game_height - this.height'
+ * @param: {File} image represents the current sprite of the player object
+ * @param: {Int} speed represents the speed of the player object. DEFAULT --> 0 because it shall not move without inputs
+ * @param: {Int} vy is used to jump, it represents his velocity on vertical axis, it shall not jump if the 'Up Arrow Key' isn't pressed. DEFAULT --> 0
+ * @param: {Int} weight is used to fall, we oppose it to the velocity to make the player come back on ground and simulate the gravity. DEFAULT --> 1
+ * @param: {Boolean} canJump determines if the player is able to jump, it is useful because we don't allow double jumps, if the player is in mid-air for example.
  *  
  */
 class Player {
@@ -113,12 +115,24 @@ class Player {
         this.canJump = true;
         
     }
+
+    /**
+     * Display the player using coordinates and drawing a hitbox around the player object
+     * @param {CanvasObject} context which canvas do you want to draw the player on?
+     * @returns void
+     */
     draw(context){
         context.beginPath();
         context.strokeRect(this.x, this.y, this.width, this.height);
         context.stroke();
         context.drawImage(this.image, this.x, this.y, this.width, this.height + 50);
     }
+
+    /**
+     * Update the player position, core of the collision detection too, /!\do not change values here only if absolutely necessary
+     * @param {*} input 
+     * @param {*} bricks 
+     */
     update(input, bricks){
         this.weight =  1;
         this.canJump = false; // You won't jump mid-air ! But if you want to, set it true.
