@@ -5,21 +5,25 @@ let score = 0;
 let gameOver = false;
 
 
-
+/**
+ * This class is handling all the keys pressed in the web browser via two events listeners.
+ * @param: {list] keys
+ * @event: If a key is down, we stock it in keys only if key doesn't exist in keys
+ * @event: If the same key is up, we remove it from keys
+ * @author: Khabibulix
+ */
 class InputHandler {
     constructor(){
         this.keys = [];
-        //Here we put the key press in a array
         window.addEventListener('keydown', e =>{
             if ((e.key === 'ArrowDown' || 
                 e.key === 'ArrowUp' || 
                 e.key === 'ArrowLeft' || 
                 e.key === 'ArrowRight')
-                && (this.keys.indexOf(e.key) === -1)){ //if key already in keys
+                && (this.keys.indexOf(e.key) === -1)){
                 this.keys.push(e.key);
             }
-        });   
-        //Here we delete key in array if button is released         
+        });        
         window.addEventListener('keyup', e => {
             if (e.key === 'ArrowDown' || 
                 e.key === 'ArrowUp' || 
@@ -31,6 +35,20 @@ class InputHandler {
     }
 }
 
+/**
+ * This class is creating bricks objects.
+ * @author: Khabibulix
+ * @param: {Int} width represents the current width of the brick object
+ * @param: {Int} height represents the current height of the brick object
+ * @param: {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
+ * @param: {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
+ * @param: {Int} x represents the current position of the brick object. DEFAULT --> Is equal to default game_width, because we want it outside of the screen to make the scrolling effective
+ * @param: {Int} y represents the current position of the brick object DEFAULT --> At 4 bricks of the ground, the ground is 'this.game_height - this.height'
+ * @param: {File} image represents the current sprite of the brick object
+ * @param: {Int} speed represents the speed of the brick object
+ * @param: {Boolean} marked_for_deletion is used to check is the brick is outside the playground, if the answer is yes, we mark it for deletion in update(). DEFAULT --> false 
+ *  
+ */
 class Brick {
     constructor(game_width, game_height){
         this.game_width = game_width;
@@ -43,6 +61,11 @@ class Brick {
         this.speed = 6;          
         this.marked_for_deletion = false;
     }
+    /**
+     * Display the brick using coordinates and drawing a hitbox around the brick object
+     * @param {CanvasObject} context which canvas do you want to draw the brick?
+     * @returns void
+     */
     draw(context){            
         context.beginPath();         
         context.strokeRect(this.x, this.y, this.width, this.height);            
@@ -50,8 +73,10 @@ class Brick {
         context.stroke();
         context.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
-    
-    update(deltaTime){
+    /**
+     * We want to loop to change the position of the brick, we check if the brick is outside and we make it move from right to left using his speed
+     */
+    update(){
         this.x -= this.speed;
         if (this.x < 0 - this.width) {               
             this.marked_for_deletion = true;
@@ -59,6 +84,20 @@ class Brick {
     }
 }
 
+/**
+ * This class is creating the player object once.
+ * @author: Khabibulix
+ * @param: {Int} width represents the current width of the player object. DEFAULT --> 200
+ * @param: {Int} height represents the current height of the player object. DEFAULT --> 252
+ * @param: {Int} game_width represents the game width of the canvas to make collision detection easier. DEFAULT --> 1500, see index.html
+ * @param: {Int} game_height represents the game height of the canvas to make collision detection easier. DEFAULT --> 700, see index.html
+ * @param: {Int} x represents the current position of the player object. DEFAULT --> 500, because we want it far from right side where bricks are coming
+ * @param: {Int} y represents the current position of the brick object DEFAULT --> On ground
+ * @param: {File} image represents the current sprite of the brick object
+ * @param: {Int} speed represents the speed of the brick object
+ * @param: {Boolean} marked_for_deletion is used to check is the brick is outside the playground, if the answer is yes, we mark it for deletion in update(). DEFAULT --> false 
+ *  
+ */
 class Player {
     constructor(game_width, game_height){
         this.game_width = game_width;
@@ -66,7 +105,7 @@ class Player {
         this.width = 200;
         this.height = 252;
         this.x = 500;
-        this.y = this.game_height - this.height * 2;
+        this.y = this.game_height - this.height;
         this.image = document.getElementById("playerImage");
         this.speed = 0;
         this.vy = 0;
@@ -113,7 +152,6 @@ class Player {
 
                 //up side of brick
                 if (this.y + this.height < brick.y){
-                    console.log("Check"); // TO REMOVE
                     if (this.vy >= 0) // Only affects the player if is falling or landed.
                     {
                         this.vy -= ((this.y + this.height) - brick.y) // Brick/Player remaining distance.
