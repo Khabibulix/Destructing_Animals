@@ -53,7 +53,9 @@ const MOVECOST_CYAN_DODGE0      =   [0 , 10, 10]; // Classic
 const MOVECOST_CYAN_DODGE1      =   [20, 0 , 10]; // Split 30
 const MOVECOST_CYAN_DODGE2      =   [0 , 30, 0 ]; // 30
 const MOVECOST_CYAN_DODGE3      =   [20, 20, 0 ]; // 40
-
+// GUI MOVELIST
+const MOVELIST = ["Red Strike","Blue Shield","Green Warm-up","Magenta Shock","Yellow Lightning","Cyan Dodge"];
+const MOVELIST_COLOR = ["red","blue","green","magenta","yellow","cyan"];
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////  / GLOBALS /  / ///////////////////////////
@@ -828,18 +830,11 @@ function fighterDraw() // Dirty way
     CTX.fillText(opponent.moveArray, CANVAS.width*0.55, CANVAS.height*0.15);
     CTX.fillText("YOUR MOVELIST", CANVAS.width*0.55, CANVAS.height*0.85);
     CTX.fillText(player.moveArray, CANVAS.width*0.55, CANVAS.height*0.9);
-    CTX.fillStyle = "red";
-    CTX.fillText("Red Strike", CANVAS.width*0.05, 100);
-    CTX.fillStyle = "blue";
-    CTX.fillText("Blue Shield", CANVAS.width*0.05, 150);
-    CTX.fillStyle = "green";
-    CTX.fillText("Green Warm-up", CANVAS.width*0.05, 200);
-    CTX.fillStyle = "magenta";
-    CTX.fillText("Magenta Shock", CANVAS.width*0.05, 250);
-    CTX.fillStyle = "yellow";
-    CTX.fillText("Yellow Lightning", CANVAS.width*0.05, 300);
-    CTX.fillStyle = "cyan";
-    CTX.fillText("Cyan Dodge", CANVAS.width*0.05, 350);
+    for (let i = 0 ; i < 6 ; i++)
+    {
+        CTX.fillStyle = MOVELIST_COLOR[i];
+        CTX.fillText(MOVELIST[i], CANVAS.width*0.05, 100 + (50*i));
+    }
     CTX.fillStyle = "black";
     CTX.fillText("DONE", CANVAS.width*0.05, 400);
     //// PLAYERS
