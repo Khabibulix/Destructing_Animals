@@ -1,3 +1,8 @@
+* {
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
 body {
     background: black;
 }
@@ -14,6 +19,7 @@ body {
 #playerImage, #backgroundImage, #enemyImage, #blockImage {
     display: none;
 }
+
 
 
 
