@@ -147,7 +147,7 @@ class Player {
         }
         bricks.forEach(brick => {            
             if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
-                /*//left side of brick
+                //left side of brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
@@ -161,7 +161,7 @@ class Player {
                         this.x = brick.x + brick.width + 10;
                         this.speed = 0;
                     }
-                }*/
+                }
 
                 //up side of brick
                 if (this.y + this.height < brick.y){
@@ -186,6 +186,12 @@ class Player {
         } else if(input.keys.indexOf("ArrowLeft") > -1){
             this.speed -= 1;
         } else if(input.keys.indexOf("ArrowUp") > -1 && this.canJump){
+            if(input.keys.indexOf("ArrowRight") > -1){
+                this.speed += 1
+            }
+            if(input.keys.indexOf("ArrowLeft") > -1){
+                this.speed -= 1
+            }
             this.vy-= 30;
             this.canJump = false;
         } else {
