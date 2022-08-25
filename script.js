@@ -1,11 +1,12 @@
 const canvas = document.getElementById("game");
 canvas.width = window.screen.width;
-canvas.height = window.screen.height;
+canvas.height = window.screen.height - 70;
 const ctx = canvas.getContext("2d");
 const bricks = []
 let score = 0;
 let gameOver = false;
 
+//Classes
 
 /**
  * This class is handling all the keys pressed in the web browser via two events listeners.
@@ -202,8 +203,8 @@ class Player {
         this.y += this.vy;
         //canvas border capping
         if (this.x < 0) this.x = 0;
-        else if (this.x > this.game_width - this.width) this.x = this.game_width - this.width
-        if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height
+        else if (this.x > this.game_width - this.width) this.x = this.game_width - this.width;
+        if (this.y  > this.game_height - this.height) this.y = this.game_height - this.height;
 
     }
     /**
@@ -248,9 +249,41 @@ class Background {
     }
 }
 
-function handleBricks(deltaTime){        
-    if (Timer > Interval + randomInterval){
+//Functions
+
+/**
+ * First test: i want to add a brick pattern into the game using this function
+ * @param {*} context 
+ * @param {CanvasContext} context Precise where the text will be, in which canvas
+ * @param {Number} len_of_rectangle Precise how much bricks will the rectagle be
+ * @param {Number} starting_x Precise the x coordinate of the rectangle
+ * @param {Number} starting_y Precise the y coordinate of the rectangle 
+ * * 
+ */
+function makeRectangleFormsPattern(context, len_of_rectangle, starting_x, starting_y){
+    let i = 0;
+    for (i;i<len_of_rectangle;i++){
         bricks.push(new Brick(canvas.width, canvas.height))
+    }
+    bricks[0].x = starting_x;
+    bricks[0].y = starting_y;
+
+    for(i+1;i<bricks.length;i++){
+        bricks[i].x = bricks[i-1].x + bricks[i-1].width;
+    }
+}
+
+/**
+ * Function where all the code for bricks go, we draw, we update and we delete bricks from here 
+ * @author Khabibulix
+ * @param {Number} deltaTime Is used for constantly generating bricks on a certain time
+ */
+function handleBricks(deltaTime){          
+    if (Timer > Interval + randomInterval){
+        if (bricks.length < 5){            
+            makeRectangleFormsPattern(ctx, 4, 500, 0); 
+        } 
+        //bricks.push(new Brick(canvas.width, canvas.height))
         //randomInterval = Math.random() * 1000 + 500;
         Timer = 0;
     } else {
@@ -267,7 +300,11 @@ function handleBricks(deltaTime){
     });
     bricks.filter(brick => !brick.marked_for_deletion);
 }
-
+/**
+ * Used to display score, for game over, or when score is incrementing
+ * @author Khabibulix
+ * @param {CanvasContext} context Precise where the text will be, in which canvas
+ */
 function displayText(context){        
     context.font = '40px Helvetica';
     context.fillStyle = "black";
