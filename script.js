@@ -135,6 +135,7 @@ class Player {
     update(input, bricks){
         this.weight =  1;
         this.canJump = false; // You won't jump mid-air !
+        
         //check floor collision
         if (!this.onGround()){
             this.vy += this.weight;
@@ -142,8 +143,17 @@ class Player {
             this.vy = 0;
             this.canJump = true;
         }
+        
         for (let brick of bricks) {            
-            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
+            if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {    
+                
+                //teleportation if player is close to left border and crushing by brick
+                if (this.x < 10){
+                    this.x = 500;
+                    this.y = 200;
+                    this.vy = 0;
+                }
+
                 //left side of brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
@@ -175,7 +185,8 @@ class Player {
                     1)  this.y + this.height * 2 > brick.y          -->  the player is exactly below the current brick tested
                     2)  this.vy < 0                                 -->  the player is jumping
                     3)  (this.y + this.height) - brick.y < 375)     -->  the player hitbox distance from the brick hitbox is getting close
-                */       
+                */  
+               //bottom side of brick     
                 } else if (this.y + this.height * 2 > brick.y && this.vy < 0) {                     
                     if ((this.y + this.height) - brick.y < 375){                                  
                         this.vy = 0;
