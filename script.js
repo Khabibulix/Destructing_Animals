@@ -142,13 +142,14 @@ class Player {
             this.vy = 0;
             this.canJump = true;
         }
-        bricks.forEach(brick => {            
+        for (let brick of bricks) {            
             if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {                
                 //left side of brick
                 if (this.x  < brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
+                        break;
                     }
                 }
 
@@ -182,7 +183,7 @@ class Player {
                 }
             }
             
-        });
+        };
         
         //controls
         if(input.keys.indexOf("ArrowRight") > -1){
@@ -260,11 +261,15 @@ class Background {
  * @param {Number} deltaTime Is used for constantly generating bricks on a certain time
  * @tutorial Math.Random intervals : https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  */
-function handleBricks(deltaTime){          
+function handleBricks(deltaTime){  
     if (Timer > Interval + randomInterval){
-        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (800 - 100) + 100)) //randomizing y pos 
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (900 - 600) + 600))
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * 1000))  //randomizing y pos 
+
         randomInterval = Math.random() * 1000 + 200;
-        Timer = 0;
+        Timer = 0;     
+           
+        
     } else {
         Timer += deltaTime;
     }
