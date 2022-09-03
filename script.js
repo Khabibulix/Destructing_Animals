@@ -6,6 +6,7 @@ const bricks = []
 let score = 0;
 let gameOver = false;
 
+
 //Classes
 
 /**
@@ -19,10 +20,7 @@ class InputHandler {
     constructor(){
         this.keys = [];
         window.addEventListener('keydown', e =>{
-            if ((e.key === 'ArrowDown' || 
-                e.key === 'ArrowUp' || 
-                e.key === 'ArrowLeft' || 
-                e.key === 'ArrowRight')
+            if ((e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')
                 && (this.keys.indexOf(e.key) === -1)){
                 this.keys.push(e.key);
             }
@@ -53,13 +51,13 @@ class InputHandler {
  *  
  */
 class Brick {
-    constructor(game_width, game_height){
+    constructor(game_width, game_height, y){
         this.game_width = game_width;
         this.game_height = game_height;
         this.width = 100;
         this.height = 100;
         this.x = this.game_width;
-        this.y = this.game_height - this.height * 4;
+        this.y = y
         this.image = document.getElementById("brickImage");   
         this.speed = 6;          
         this.marked_for_deletion = false;
@@ -81,9 +79,7 @@ class Brick {
      */
     update(){
         this.x -= this.speed;
-        if (this.x < 0 - this.width) {               
-            this.marked_for_deletion = true;
-        }
+        return (this.x < 0 - this.width ? this.marked_for_deletion = true : false);
     }
 }
 
@@ -138,7 +134,7 @@ class Player {
      */
     update(input, bricks){
         this.weight =  1;
-        this.canJump = false; // You won't jump mid-air ! But if you want to, set it true.
+        this.canJump = false; // You won't jump mid-air !
         //check floor collision
         if (!this.onGround()){
             this.vy += this.weight;
@@ -252,39 +248,14 @@ class Background {
 //Functions
 
 /**
- * First test: i want to add a brick pattern into the game using this function
- * @param {*} context 
- * @param {CanvasContext} context Precise where the text will be, in which canvas
- * @param {Number} len_of_rectangle Precise how much bricks will the rectagle be
- * @param {Number} starting_x Precise the x coordinate of the rectangle
- * @param {Number} starting_y Precise the y coordinate of the rectangle 
- * * 
- */
-function makeRectangleFormsPattern(context, len_of_rectangle, starting_x, starting_y){
-    let i = 0;
-    for (i;i<len_of_rectangle;i++){
-        bricks.push(new Brick(canvas.width, canvas.height))
-    }
-    bricks[0].x = starting_x;
-    bricks[0].y = starting_y;
-
-    for(i+1;i<bricks.length;i++){
-        bricks[i].x = bricks[i-1].x + bricks[i-1].width;
-    }
-}
-
-/**
  * Function where all the code for bricks go, we draw, we update and we delete bricks from here 
  * @author Khabibulix
  * @param {Number} deltaTime Is used for constantly generating bricks on a certain time
  */
 function handleBricks(deltaTime){          
     if (Timer > Interval + randomInterval){
-        if (bricks.length < 5){            
-            makeRectangleFormsPattern(ctx, 4, 500, 0); 
-        } 
-        //bricks.push(new Brick(canvas.width, canvas.height))
-        //randomInterval = Math.random() * 1000 + 500;
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (800 - 100) + 100)) //randomizing y pos
+        randomInterval = Math.random() * 1000 + 200;
         Timer = 0;
     } else {
         Timer += deltaTime;
