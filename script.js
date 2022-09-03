@@ -169,9 +169,16 @@ class Player {
                         this.vy = Math.floor(this.vy); // Rounding the value to avoid anti-aliasing (optimization).
                         if (this.vy == 0) this.canJump = true; // Make sure the player is fully landed before being able to jump.
                     }
-                } else if (this.y + this.height * 2 > brick.y && this.vy < 0) { 
-                    //here we are checking if the player is jumping and if he is below a brick, if it's the case, we are making the player falling immediatly
-                    this.vy = 0;
+                /* 
+                Multiple checks here:
+                    1)  this.y + this.height * 2 > brick.y          -->  the player is exactly below the current brick tested
+                    2)  this.vy < 0                                 -->  the player is jumping
+                    3)  (this.y + this.height) - brick.y < 375)     -->  the player hitbox distance from the brick hitbox is getting close
+                */       
+                } else if (this.y + this.height * 2 > brick.y && this.vy < 0) {                     
+                    if ((this.y + this.height) - brick.y < 375){                                  
+                        this.vy = 0;
+                    }
                 }
             }
             
@@ -251,10 +258,11 @@ class Background {
  * Function where all the code for bricks go, we draw, we update and we delete bricks from here 
  * @author Khabibulix
  * @param {Number} deltaTime Is used for constantly generating bricks on a certain time
+ * @tutorial Math.Random intervals : https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
  */
 function handleBricks(deltaTime){          
     if (Timer > Interval + randomInterval){
-        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (800 - 100) + 100)) //randomizing y pos
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (800 - 100) + 100)) //randomizing y pos 
         randomInterval = Math.random() * 1000 + 200;
         Timer = 0;
     } else {
