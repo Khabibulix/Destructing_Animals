@@ -5,11 +5,20 @@ const ctx = canvas.getContext("2d");
 const bricks = []
 const gems_images = document.querySelectorAll(".gems");
 const gems = []
+const gems_collected = {
+    red : 0,
+    black : 0,
+    blue : 0,
+    green : 0,
+    white : 0
+}
 
 let score = 0;
 let gameOver = false;
 
 
+//let grabbing_color = gem.split("/")
+//let color = grabbing_color[grabbing_color.length - 1]
 
 //Classes
 
@@ -165,7 +174,7 @@ class Player {
      * @param {InputHandler} input Represents an object created using InputHandler class, we want the Player class to know which keys are pressed 
      * @param {List} bricks Represents all the bricks created using the function handleBricks(), we want the Player class to know where the bricks are, for the collision detection
      */
-    update(input, bricks){
+    update(input, bricks, gems){
         this.weight =  1;
         this.canJump = false; // You won't jump mid-air !
         
@@ -230,6 +239,33 @@ class Player {
             
         };
         
+        //gem collision here
+        for (let gem of gems) {
+            if (this.x < gem.x + gem.width && this.x + this.width  > gem.x ) {
+                let color_of_gem_touched = gem.image.src.split("/")[gem.image.src.split("/").length - 1] //grab the src of the gem touched for the switch
+                switch(color_of_gem_touched){
+                    case 'black.png':
+                        console.log("noir");
+                        break;
+                    case 'blue.png':
+                        console.log("bleu");
+                        break;
+                    case 'green.png':
+                        console.log("vert");
+                        break;
+                    case 'red.png':
+                        console.log("rouge");
+                        break;
+                    case 'white.png':
+                        console.log("blanc");
+                        break;
+                }
+                //gem.marked_for_deletion = true; //deleting gem touched
+                
+
+            }
+        }
+
         //controls
         if(input.keys.indexOf("ArrowRight") > -1){
             this.speed += 1;
@@ -384,8 +420,6 @@ function displayText(context){
 const input = new InputHandler();
 const player =  new Player(canvas.width, canvas.height);
 const background = new Background(canvas.width, canvas.height);
-const gem = new Gem(canvas.width, canvas.height)
-
 let last_time = 0;
 let Timer = 0;
 let Interval = 2000;
@@ -399,7 +433,7 @@ function animate(timeStamp){
     //background.update();
     handleGems(deltaTime - 10)
     player.draw(ctx)
-    player.update(input, bricks);              
+    player.update(input, bricks, gems);              
     //handleBricks(deltaTime);
     displayText(ctx);
     if (!gameOver) requestAnimationFrame(animate);
