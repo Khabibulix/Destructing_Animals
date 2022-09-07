@@ -140,9 +140,6 @@ var buttonList = [];
 ////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-document.addEventListener("keydown", none, false);
-function none(){};
-
 class Mouse
 {
     constructor()
