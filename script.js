@@ -3,8 +3,12 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext("2d");
 const bricks = []
+const gems_images = document.querySelectorAll(".gems");
+const gems = []
+
 let score = 0;
 let gameOver = false;
+
 
 
 //Classes
@@ -33,6 +37,35 @@ class InputHandler {
                 this.keys.splice(this.keys.indexOf(e.key), 1);
             }                
         });
+    }
+}
+
+class Gem{
+    constructor(game_width, game_height){
+        this.game_width = game_width;
+        this.game_height = game_height;
+        this.width = 100;
+        this.height = 100;
+        this.x = this.game_width;
+        this.y = 500
+        this.image = gems_images[Math.floor(Math.random()*gems_images.length)];   //random choice of gem color
+        this.speed = 6;          
+        this.marked_for_deletion = false;
+    }
+
+    draw(context){            
+        context.beginPath();         
+        context.strokeRect(this.x, this.y, this.width, this.height);            
+        context.strokeStyle = "blue";
+        context.stroke();
+        context.drawImage(this.image, this.x, this.y, this.width, this.height);
+    }
+    /**
+     * We want to loop to change the position of the brick, we check if the brick is outside and we make it move from right to left using his speed
+     */
+    update(){
+        this.x -= this.speed;
+        return (this.x < 0 - this.width ? this.marked_for_deletion = true : false);
     }
 }
 
@@ -144,6 +177,7 @@ class Player {
             this.canJump = true;
         }
         
+        //brick collision here
         for (let brick of bricks) {            
             if (this.x < brick.x + brick.width && this.x + this.width  > brick.x ) {    
                 
@@ -151,11 +185,10 @@ class Player {
                 if (this.x < 10){
                     this.x = 500;
                     this.y = 200;
-                    this.vy = 0;
                 }
 
                 //left side of brick
-                if (this.x  < brick.x ){ 
+                if (this.x <= brick.x ){ 
                     if (this.y < brick.y + brick.height && this.height + this.y > brick.y){
                         this.x = brick.x - brick.width - 90;
                         this.speed = 0;
@@ -179,6 +212,7 @@ class Player {
                         this.vy /= 8; // Make sure the player won't fall too quickly and so bypass collision check.
                         this.vy = Math.floor(this.vy); // Rounding the value to avoid anti-aliasing (optimization).
                         if (this.vy == 0) this.canJump = true; // Make sure the player is fully landed before being able to jump.
+                        break;
                     }
                 /* 
                 Multiple checks here:
@@ -275,7 +309,8 @@ class Background {
 function handleBricks(deltaTime){  
     if (Timer > Interval + randomInterval){
         bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (900 - 600) + 600))
-        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * 1000))  //randomizing y pos 
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * (600 - 200) + 200))
+        bricks.push(new Brick(canvas.width, canvas.height, Math.random() * 1000))
 
         randomInterval = Math.random() * 1000 + 200;
         Timer = 0;     
@@ -295,6 +330,36 @@ function handleBricks(deltaTime){
     });
     bricks.filter(brick => !brick.marked_for_deletion);
 }
+
+/**
+ * Function where all the code for gems go, we draw, we update and we delete gems from here 
+ * @author Khabibulix
+ * @param {Number} deltaTime Is used for constantly generating gems on a certain time
+ * @tutorial Math.Random intervals : https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+ */
+function handleGems(deltaTime){  
+    if (Timer > Interval + randomInterval){
+        gems.push(new Gem(canvas.width, canvas.height))
+        randomInterval = Math.random() * 1000 + 200;
+        Timer = 0;     
+           
+        
+    } else {
+        Timer += deltaTime;
+    }
+    gems.forEach(gem => {
+        gem.draw(ctx);
+        gem.update(deltaTime);
+    });
+
+    gems.forEach(gem => {
+        if (gem.marked_for_deletion){
+            gems.shift();
+        }
+    });
+    gems.filter(gem => !gem.marked_for_deletion);
+}
+
 /**
  * Used to display score, for game over, or when score is incrementing
  * @author Khabibulix
@@ -319,6 +384,7 @@ function displayText(context){
 const input = new InputHandler();
 const player =  new Player(canvas.width, canvas.height);
 const background = new Background(canvas.width, canvas.height);
+const gem = new Gem(canvas.width, canvas.height)
 
 let last_time = 0;
 let Timer = 0;
@@ -331,9 +397,10 @@ function animate(timeStamp){
     ctx.clearRect(0,0, canvas.width, canvas.height)      
     //background.draw(ctx);
     //background.update();
+    handleGems(deltaTime - 10)
     player.draw(ctx)
     player.update(input, bricks);              
-    handleBricks(deltaTime);
+    //handleBricks(deltaTime);
     displayText(ctx);
     if (!gameOver) requestAnimationFrame(animate);
 }
