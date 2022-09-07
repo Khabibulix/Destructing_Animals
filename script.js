@@ -242,25 +242,26 @@ class Player {
         //gem collision here
         for (let gem of gems) {
             if (this.x < gem.x + gem.width && this.x + this.width  > gem.x ) {
-                let color_of_gem_touched = gem.image.src.split("/")[gem.image.src.split("/").length - 1] //grab the src of the gem touched for the switch
+                //http://127.0.0.1:5500/Destructing_Animals/assets/black.png --> black.png
+                let color_of_gem_touched = gem.image.src.split("/")[gem.image.src.split("/").length - 1]
                 switch(color_of_gem_touched){
                     case 'black.png':
-                        console.log("noir");
+                        gems_collected.black += 1
                         break;
                     case 'blue.png':
-                        console.log("bleu");
+                        gems_collected.blue += 1
                         break;
                     case 'green.png':
-                        console.log("vert");
+                        gems_collected.green += 1
                         break;
                     case 'red.png':
-                        console.log("rouge");
+                        gems_collected.red += 1
                         break;
                     case 'white.png':
-                        console.log("blanc");
+                        gems_collected.white += 1
                         break;
                 }
-                //gem.marked_for_deletion = true; //deleting gem touched
+                gem.marked_for_deletion = true; //deleting gem touched
                 
 
             }
