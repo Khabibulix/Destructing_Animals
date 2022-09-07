@@ -241,7 +241,10 @@ class Player {
         
         //gem collision here
         for (let gem of gems) {
-            if (this.x < gem.x + gem.width && this.x + this.width  > gem.x ) {
+            const dx = (gem.x + gem.width/2) - (this.x + this.width/2);
+            const dy = (gem.y + gem.height/2) - (this.y + this.height/2);
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < gem.width/2 + this.width/2 - 30){           
                 //http://127.0.0.1:5500/Destructing_Animals/assets/black.png --> black.png
                 let color_of_gem_touched = gem.image.src.split("/")[gem.image.src.split("/").length - 1]
                 switch(color_of_gem_touched){
@@ -432,10 +435,10 @@ function animate(timeStamp){
     ctx.clearRect(0,0, canvas.width, canvas.height)      
     //background.draw(ctx);
     //background.update();
-    handleGems(deltaTime - 10)
+    handleGems(deltaTime)        
     player.draw(ctx)
     player.update(input, bricks, gems);              
-    //handleBricks(deltaTime);
+    handleBricks(deltaTime);
     displayText(ctx);
     if (!gameOver) requestAnimationFrame(animate);
 }
