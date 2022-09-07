@@ -9,12 +9,6 @@ const CTX = CANVAS.getContext("2d"); // Context, to use to draw in
 /////////////////////////  / CONSTANTS /  / //////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-const TILE_SIZE = 64;
-const WINDOW_WIDTH = CANVAS.width;
-const WINDOW_HEIGHT = CANVAS.height;
-const WINDOW_X_CENTER = CANVAS.width / 2;
-const WINDOW_Y_CENTER = CANVAS.height / 2;
-
 // Moves
 const MOVE_GUARD            =   0;
 const MOVE_RED_STRIKE       =   1;
@@ -135,6 +129,27 @@ const MOVEFUNC =
 //////////////////////////////////////////////////////////////////////
 
 var buttonList = [];
+
+//////////////////////////////////////////////////////////////////////
+////////////////////  / WINDOW MANAGEMENT /  / ///////////////////////
+//////////////////////////////////////////////////////////////////////
+
+class Game_Window
+{
+    constructor()
+    {
+        this.width = CANVAS.width;
+        this.height = CANVAS.height;
+    }
+    process()
+    {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        CANVAS.width = this.width;
+        CANVAS.height = this.height;
+    }
+}
+var gameWindow = new Game_Window();
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  / INPUT MANAGEMENT /  / ////////////////////////
@@ -722,34 +737,34 @@ var player = new Fighter_Player(100, 50, 50, 50);
 var opponent = new Fighter_Player(100, 75, 75, 75);
 var manager = new Fighter_Manager;
 //
-var wMargin = ((CANVAS.width + CANVAS.height)/2) * 0.01;
+var wMargin = ((gameWindow.width + gameWindow.height)/2) * 0.01;
 var gui_pannel1 = new GUI_Window
 (
     wMargin,
     wMargin,
-    CANVAS.width * 0.3,
-    CANVAS.height - (wMargin*2)
+    gameWindow.width * 0.3,
+    gameWindow.height - (wMargin*2)
 );
 var gui_pannel2 = new GUI_Window
 (
-    CANVAS.width * 0.3 + (wMargin*2),
+    gameWindow.width * 0.3 + (wMargin*2),
     wMargin,
-    CANVAS.width * 0.7 - (wMargin*3),
-    CANVAS.height * 0.25 - wMargin
+    gameWindow.width * 0.7 - (wMargin*3),
+    gameWindow.height * 0.25 - wMargin
 );
 var gui_pannel3 = new GUI_Window
 (
-    CANVAS.width * 0.3 + (wMargin*2),
-    CANVAS.height * 0.25 + wMargin,
-    CANVAS.width * 0.7 - (wMargin*3),
-    CANVAS.height * 0.5 - wMargin
+    gameWindow.width * 0.3 + (wMargin*2),
+    gameWindow.height * 0.25 + wMargin,
+    gameWindow.width * 0.7 - (wMargin*3),
+    gameWindow.height * 0.5 - wMargin
 );
 var gui_pannel4 = new GUI_Window
 (
-    CANVAS.width * 0.3 + (wMargin*2),
-    CANVAS.height * 0.75 + wMargin,
-    CANVAS.width * 0.7 - (wMargin*3),
-    CANVAS.height * 0.25 - (wMargin*2)
+    gameWindow.width * 0.3 + (wMargin*2),
+    gameWindow.height * 0.75 + wMargin,
+    gameWindow.width * 0.7 - (wMargin*3),
+    gameWindow.height * 0.25 - (wMargin*2)
 );
 
 // MOVE BUTTONS
@@ -759,8 +774,8 @@ for (let y = 0 ; y <= 5 ; y++)
     {
         buttonList.push(
             new GUI_Button(
-                y <= 2? CANVAS.width*0.2 + (50*x) : CANVAS.width*0.2 + (100*x),
-                CANVAS.height*0.1 + (50*y),
+                y <= 2? gameWindow.width*0.2 + (50*x) : gameWindow.width*0.2 + (100*x),
+                gameWindow.height*0.1 + (50*y),
                 y <= 2? 50 : 100,
                 50,
                 MOVEBUTTON_COST[y][x],
@@ -771,8 +786,8 @@ for (let y = 0 ; y <= 5 ; y++)
 }
 // Start fight
 var buttonFight = new GUI_Button(
-    CANVAS.width*0.05,
-    CANVAS.height*0.7,
+    gameWindow.width*0.05,
+    gameWindow.height*0.7,
     100,
     100,
     "DONE",
@@ -816,10 +831,10 @@ function fighterProcess()
 function fighterDraw() // Dirty way
 {
     //// CLEAN
-    CTX.clearRect(0,0, CANVAS.width, CANVAS.height);
+    CTX.clearRect(0,0, gameWindow.width, gameWindow.height);
     //// BACKGROUND
     CTX.fillStyle = "black";
-    CTX.fillRect(0,0, CANVAS.width, CANVAS.height);
+    CTX.fillRect(0,0, gameWindow.width, gameWindow.height);
     // GUI
     gui_pannel1.draw();
     gui_pannel2.draw();
@@ -829,47 +844,47 @@ function fighterDraw() // Dirty way
     //// MOVELIST
     CTX.font = "30px Arial";
     CTX.fillStyle = "black";
-    CTX.fillText("MOVES", CANVAS.width*0.1, CANVAS.height*0.05);
-    CTX.fillText("GEMS = " + player.money, CANVAS.width*0.025, CANVAS.height*0.9);
-    CTX.fillText("BOUGHT = " + player.moveArray, CANVAS.width*0.025, CANVAS.height*0.95);
-    CTX.fillText("OPPONENT MOVELIST", CANVAS.width*0.55, CANVAS.height*0.1);
-    CTX.fillText(opponent.moveArray, CANVAS.width*0.55, CANVAS.height*0.15);
-    CTX.fillText("YOUR MOVELIST", CANVAS.width*0.55, CANVAS.height*0.85);
-    CTX.fillText(player.moveArray, CANVAS.width*0.55, CANVAS.height*0.9);
+    CTX.fillText("MOVES", gameWindow.width*0.1, gameWindow.height*0.05);
+    CTX.fillText("GEMS = " + player.money, gameWindow.width*0.025, gameWindow.height*0.9);
+    CTX.fillText("BOUGHT = " + player.moveArray, gameWindow.width*0.025, gameWindow.height*0.95);
+    CTX.fillText("OPPONENT MOVELIST", gameWindow.width*0.55, gameWindow.height*0.1);
+    CTX.fillText(opponent.moveArray, gameWindow.width*0.55, gameWindow.height*0.15);
+    CTX.fillText("YOUR MOVELIST", gameWindow.width*0.55, gameWindow.height*0.85);
+    CTX.fillText(player.moveArray, gameWindow.width*0.55, gameWindow.height*0.9);
     for (let i = 0 ; i < 6 ; i++)
     {
         CTX.fillStyle = MOVELIST_COLOR[i];
-        CTX.fillText(MOVELIST[i], CANVAS.width*0.05, 100 + (50*i));
+        CTX.fillText(MOVELIST[i], gameWindow.width*0.05, 100 + (50*i));
     }
     //// PLAYERS
     // P1
     CTX.fillStyle = "black";
-    CTX.fillRect(CANVAS.width*0.5,CANVAS.height*0.5,100,100);
-    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.35,150,10);
-    CTX.fillText(player.health, CANVAS.width*0.48 + 150, CANVAS.height*0.35);
+    CTX.fillRect(gameWindow.width*0.5,gameWindow.height*0.5,100,100);
+    CTX.fillRect(gameWindow.width*0.48,gameWindow.height*0.35,150,10);
+    CTX.fillText(player.health, gameWindow.width*0.48 + 150, gameWindow.height*0.35);
     CTX.fillStyle = "red";
-    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.38,150,10);
-    CTX.fillText(player.attack, CANVAS.width*0.48 + 150, CANVAS.height*0.38);
+    CTX.fillRect(gameWindow.width*0.48,gameWindow.height*0.38,150,10);
+    CTX.fillText(player.attack, gameWindow.width*0.48 + 150, gameWindow.height*0.38);
     CTX.fillStyle = "blue";
-    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.41,150,10);
-    CTX.fillText(player.defense, CANVAS.width*0.48 + 150, CANVAS.height*0.41);
+    CTX.fillRect(gameWindow.width*0.48,gameWindow.height*0.41,150,10);
+    CTX.fillText(player.defense, gameWindow.width*0.48 + 150, gameWindow.height*0.41);
     CTX.fillStyle = "green";
-    CTX.fillRect(CANVAS.width*0.48,CANVAS.height*0.44,150,10);
-    CTX.fillText(player.speed, CANVAS.width*0.48 + 150, CANVAS.height*0.44);
+    CTX.fillRect(gameWindow.width*0.48,gameWindow.height*0.44,150,10);
+    CTX.fillText(player.speed, gameWindow.width*0.48 + 150, gameWindow.height*0.44);
     // P2
     CTX.fillStyle = "black";
-    CTX.fillRect(CANVAS.width*0.7,CANVAS.height*0.5,100,100);
-    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.35,150,10);
-    CTX.fillText(opponent.health, CANVAS.width*0.68 + 150, CANVAS.height*0.35);
+    CTX.fillRect(gameWindow.width*0.7,gameWindow.height*0.5,100,100);
+    CTX.fillRect(gameWindow.width*0.68,gameWindow.height*0.35,150,10);
+    CTX.fillText(opponent.health, gameWindow.width*0.68 + 150, gameWindow.height*0.35);
     CTX.fillStyle = "red";
-    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.38,150,10);
-    CTX.fillText(opponent.attack, CANVAS.width*0.68 + 150, CANVAS.height*0.38);
+    CTX.fillRect(gameWindow.width*0.68,gameWindow.height*0.38,150,10);
+    CTX.fillText(opponent.attack, gameWindow.width*0.68 + 150, gameWindow.height*0.38);
     CTX.fillStyle = "blue";
-    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.41,150,10);
-    CTX.fillText(opponent.defense, CANVAS.width*0.68 + 150, CANVAS.height*0.41);
+    CTX.fillRect(gameWindow.width*0.68,gameWindow.height*0.41,150,10);
+    CTX.fillText(opponent.defense, gameWindow.width*0.68 + 150, gameWindow.height*0.41);
     CTX.fillStyle = "green";
-    CTX.fillRect(CANVAS.width*0.68,CANVAS.height*0.44,150,10);
-    CTX.fillText(opponent.speed, CANVAS.width*0.68 + 150, CANVAS.height*0.44);
+    CTX.fillRect(gameWindow.width*0.68,gameWindow.height*0.44,150,10);
+    CTX.fillText(opponent.speed, gameWindow.width*0.68 + 150, gameWindow.height*0.44);
     // BUTTON
     buttonList.forEach(element => {
         element.draw();
@@ -879,6 +894,7 @@ function fighterDraw() // Dirty way
 
 function fighterGameloop()
 {
+    gameWindow.process();
     fighterProcess();
     fighterDraw();
     requestAnimationFrame(fighterGameloop);
